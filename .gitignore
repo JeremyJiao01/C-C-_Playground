@@ -2,6 +2,6 @@
 .vs/
 Reference/
 CMakeLists.txt
-.sln
+*.sln
 .idea/
 cmake-build-debug/
