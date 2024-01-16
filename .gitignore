@@ -3,3 +3,5 @@
 Reference/
 CMakeLists.txt
 .sln
+.idea/
+cmake-build-debug/
