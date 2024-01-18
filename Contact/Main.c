@@ -54,6 +54,8 @@ int main() {
                 Print(&Con);
                 break;
             case EXIT:
+                SaveContact(&Con);
+                Destroy(&Con);
                 return 0;
         }
     } while (input);

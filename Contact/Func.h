@@ -30,6 +30,8 @@ typedef struct Con{
 
 void Init_con(Con *data);
 
+void LoadFile(Con *data);
+
 void Add(Con *data);
 
 void Print(Con *data);
@@ -39,3 +41,7 @@ void Find(Con *data);
 void Del(Con *data);
 
 void Mod(Con *data);
+
+void Destroy(Con *data);
+
+void SaveContact(Con *data);
