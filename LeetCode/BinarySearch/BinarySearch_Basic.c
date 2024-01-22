@@ -20,7 +20,7 @@ int Search(int nums[], int numsSize, int target){
 // 第二种分支的思路是：
 // 将需要搜索的数组分为两部分当目标不在一部分内，则直接转到第二个部分
 // 即while的判断条件为(left < right)
-int Search(int nums[], int numsSize, int target){
+int Search_RoundUp(int nums[], int numsSize, int target){
 	int left = 0;
 	int right = len - 1; // 这里因为是数组所以-1
 	while(left < right){
@@ -40,3 +40,6 @@ int Search(int nums[], int numsSize, int target){
 	}
 	return -1;
 }
+
+
+
