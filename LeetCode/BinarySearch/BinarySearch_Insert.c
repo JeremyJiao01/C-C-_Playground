@@ -80,7 +80,7 @@ int* searchRange(int* nums, int numsSize, int target, int* returnSize) {
 	return arr;
 }
 
-// # 33 寻找旋转排序数组中的最小值
+// # 154 寻找旋转排序数组中的最小值
 
 // 已知一个长度为 n 的数组，预先按照升序排列，
 // 经由 1 到 n 次旋转后，得到输入数组。
@@ -131,3 +131,63 @@ int findMin(int* nums, int numsSize) {
     return nums[left];
 }
 
+// # 34 寻找旋转排序数组中的最小值 II
+// 与 I 不同点在于，数组中存在重复数字
+
+int findMin(int* nums, int numsSize) {
+    int left = 0;
+    int right = numsSize - 1;
+    while(left < right){
+        int mid = (left + right) >> 1;
+        if(nums[mid] < nums[right]){
+            right = mid;
+        }else if(nums[mid] > nums[right]){
+            left = mid + 1;
+        }else{
+	    // 当mid指向的元素值与右指针相等时
+	    // mid所指元素不为最小值，因此只需将搜索范围减少
+	    // 即right--
+            right -= 1;
+        }
+    }   
+    return nums[left];
+}
+
+// # 33 搜索旋转数组
+// 寻找旋转数组中的元素
+// 由于数组旋转后，必会有两部分，这两部分局部有序
+// 因此只需找到target在的区域
+
+int search(int* nums, int numsSize, int target) {
+    if (nums == NULL || numsSize <= 0) {
+        return -1;
+    }
+    int left = 0;
+    int right = numsSize - 1;
+
+    // 循环条件修改
+    while (left < right) {
+        int mid = (left + right) / 2; // 防止溢出
+        if (nums[mid] == target) {
+            return mid;
+        }
+
+        // 针对旋转数组的判断逻辑修改
+        if (nums[mid] >= nums[left]) {
+            if (target >= nums[left] && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            if (target > nums[mid] && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+
+    // 考虑 target 等于 right 的情况
+    return (nums[right] == target) ? right : -1;
+}
