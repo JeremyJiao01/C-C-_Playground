@@ -229,3 +229,96 @@ bool search(int *nums, int numsSize, int target) {
     // 考虑 target 等于 right 的情况
     return (nums[right] == target) ? true : false;
 }
+
+// # 852 山脉数组的峰顶索引
+// 山脉数组：arr.length >= 3, 存在
+// arr[0] < arr[1] < ... < arr[i] > arr[i + 1] > ... > arr[arr.length - 1]
+// 返回峰顶下标 i 
+
+// 方法一：将大于前一个作为判断条件
+int peakIndexInMountainArray(int* arr, int arrSize) {
+    int left = 1;
+    int right = arrSize - 2;
+    int ans = 1;
+    while(left < right){
+        int mid = (left + right + 1) / 2;
+        if (arr[mid] > arr[mid - 1]){
+            left = mid;
+            ans = mid;
+        }else{
+            right = mid - 1;
+        }
+    }
+    return ans;
+
+// 方法二：将大于后一个作为判断条件
+int peakIndexInMountainArray(int* arr, int arrSize) {
+    int n = arrSize;
+    int left = 1, right = n - 2, ans = 0;
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (arr[mid] > arr[mid + 1]) {
+            ans = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return ans;
+}
+
+
+// # 1095 山脉数组中查找目标值
+// 思路：1. 先找到峰值
+// 	 2. 在左侧寻找target
+// 	 3. 若左侧没有则寻找右侧
+
+// 1. 使用二分法找到峰值
+int findMax_Index(int* nums, int numsSize){
+    int left = 1;
+    int right = numsSize - 2;
+    int ans = 0;
+    while(left <= right){
+        int mid = (left + right) / 2;
+        if (nums[mid] > nums[mid + 1]){
+            right = mid - 1;
+            ans = mid;
+        }else{
+            left = mid + 1;
+        }
+    }
+    return ans;
+}
+
+// 2. 普通二分查找
+// 对于二分搜索，由于山峰右侧为单调递减
+// 因此当利用同一个函数时，需要设置flag
+// 使用负数实现单调递增再进行后续的判断
+
+int binarySearch(int* nums, int target, int left, int right, bool flag){
+    if (!flag){
+        target *= -1;
+    }
+    while(left <= right){
+        int mid = (right + left) / 2;
+        int cur = nums[mid] * (flag ? 1 : -1);
+        if (cur == target) {
+            return mid;
+        } else if (cur < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return -1;
+}
+
+int findInint(int target, int* nums, int numsSize) {
+    int peak = findMax_Index(nums, numsSize);
+    int left = binarySearch(nums, target, 0, peak, true);
+    if (left == -1){
+        return binarySearch(nums, target, peak + 1, numsSize - 1, false);
+    }
+    return left;
+}
+
