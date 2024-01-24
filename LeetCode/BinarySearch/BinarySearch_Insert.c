@@ -191,3 +191,41 @@ int search(int* nums, int numsSize, int target) {
     // 考虑 target 等于 right 的情况
     return (nums[right] == target) ? right : -1;
 }
+
+// # 81 搜索旋转排序数组 II
+// 排序数组中存在重复数字，若target存在返回true，否则返回false
+
+bool search(int *nums, int numsSize, int target) {
+    if (nums == NULL || numsSize <= 0) {
+        return false;
+    }
+    int left = 0;
+    int right = numsSize - 1;
+
+    // 循环条件修改
+    while (left < right) {
+        int mid = (left + right) / 2; // 防止溢出
+        if (nums[mid] == target) {
+            return true;
+        }
+        if (nums[left] == nums[mid] && nums[mid] == nums[right]) {
+            // 因为存在重复数字，当两端都是重复数字时，缩小查找范围
+            ++left;
+            --right;
+        } else if (nums[mid] >= nums[left]) {
+            if (target >= nums[left] && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            if (target > nums[mid] && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    // 考虑 target 等于 right 的情况
+    return (nums[right] == target) ? true : false;
+}
