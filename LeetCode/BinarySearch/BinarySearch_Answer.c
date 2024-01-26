@@ -51,3 +51,87 @@ int findDuplicate(int* nums, int numsSize){
 	}
 	return ans;
 }
+
+
+// # 1300 转变数组后最接近目标值的数组和
+//
+// 方法一：
+// 二分枚举法
+// 1. 将数组按增序排序
+// 2. 创建一个新的数组，长度为原数组+1，新数组从new[1]开始
+//    每个位置i为原数组i及其之前所有元素的和
+// 3. 遍历从1到原数组中的最大值（i）
+//      1. 使用二分查找找到原数组中最接近i的值
+//      2. 将大于i的所有数替换成i
+//      3. 将元素组前i个的和后n-i个i的和相加 并与当前target相减的绝对值
+//      4. 与之前得到的绝对差值比较，若小于之前的值，则保存
+
+// 快速排序
+void quick_sort(int* A, int low, int high){
+    if(low >= high)
+        return;
+    int i = low, j = high;
+    int temp = A[i];
+    while(i<j){
+        while(i<j && A[j] >= temp){
+            j--;
+        }
+        A[i]=A[j];
+        while(i<j && A[i] <= temp){
+            i++;
+        }
+        A[j]=A[i];
+    }
+    A[i] = temp;
+    quick_sort(A, low, i-1);
+    quick_sort(A, i+1, high);
+}
+
+// 二分查找值的位置，若数组中不存在，则返回接近的最大值下标
+int findLastpoint(int* nums, int numsSize, int target){
+    int left =  0;
+    int right = numsSize - 1;
+    while(left < right){
+        int mid = left + (right - left + 1)/2;
+        if(nums[mid] <= target){
+            if(nums[mid] == target){
+                return mid;
+            }
+            left = mid;
+        }
+        else{
+            right = mid - 1;
+        }
+    }
+    return left + 1;
+}
+
+int findBestValue(int* arr, int arrSize, int target) {
+    quick_sort(arr, 0, arrSize - 1);
+    int* addNums = (int*)malloc((arrSize + 1)*sizeof(int));
+    int i = 1;
+    for(i = 1; i <= arrSize; i++){
+        addNums[i] = arr[i - 1] + addNums[i - 1];
+    }
+    int max = arr[arrSize - 1];
+    int ans = 0;
+    int diff = target;
+    for(i = 1; i <= max; i++){
+        int cur = 0;
+        if(i < arr[0]){
+            // 若当前索引的值小于数组第一个元素的值
+            // 则后续为此值 * 数组大小
+            cur = arrSize * i;
+        }else{
+            int index = findLastpoint(arr, arrSize, i);
+            cur = addNums[index] + (arrSize - index) * i;
+        }
+        if(abs(cur - target) < diff){
+            ans = i;
+            diff = abs(cur - target);
+        }
+    }
+    free(addNums);
+    addNums = NULL;
+    return ans;
+}
