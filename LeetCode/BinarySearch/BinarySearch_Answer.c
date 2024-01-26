@@ -135,3 +135,91 @@ int findBestValue(int* arr, int arrSize, int target) {
     addNums = NULL;
     return ans;
 }
+
+// 方法二：
+// 双重二分查找
+// 由于随着方法一中的前n项和是严格递增的
+// 不存在两个不同的n项和，因此一定存在一个值
+// 使得数组的和最接近且不大于target
+// 通过二分查找我们能找到【最接近且不大于】与【最接近且不小于】的值
+// 但是因为严格递增，所以【最接近且不大于】+ 1 就为【最接近且不小于】
+
+int check(const int* arr, int size, int x) {
+    int ret = 0;
+    for (int i = 0; i < size; ++i) {
+        ret += (arr[i] >= x ? x : arr[i]);
+    }
+    return ret;
+}
+
+// 快速排序
+void quick_sort(int* A, int low, int high){
+    if(low >= high)
+        return;
+    int i = low, j = high;
+    int temp = A[i];
+    while(i<j){
+        while(i<j && A[j] >= temp){
+            j--;
+        }
+        A[i]=A[j];
+        while(i<j && A[i] <= temp){
+            i++;
+        }
+        A[j]=A[i];
+    }
+    A[i] = temp;
+    quick_sort(A, low, i-1);
+    quick_sort(A, i+1, high);
+}
+
+// 二分查找值的位置，若数组中不存在，则返回接近的最大值下标
+int findLastpoint(int* nums, int numsSize, int target){
+    int left =  0;
+    int right = numsSize - 1;
+    while(left < right){
+        int mid = left + (right - left + 1)/2;
+        if(nums[mid] <= target){
+            if(nums[mid] == target){
+                return mid;
+            }
+            left = mid;
+        }
+        else{
+            right = mid - 1;
+        }
+    }
+    return left + 1;
+}
+
+int findBestValue(int* arr, int arrSize, int target) {
+    quick_sort(arr, 0, arrSize - 1);
+    int* addNums = (int*)malloc((arrSize + 1)*sizeof(int));
+    int i = 1;
+    for(i = 1; i <= arrSize; i++){
+        addNums[i] = arr[i - 1] + addNums[i - 1];
+    }
+    int left = 0;
+    int right = arr[arrSize - 1];
+    int cur = 0;
+    int ans = -1;
+    while(left <= right){
+        int mid = (left + right) / 2;
+        if(mid < arr[0]){
+            cur = mid * arrSize;
+        }else{
+            int index = findLastpoint(arr, arrSize, mid);
+            cur = addNums[index] + (arrSize - index) * mid;
+        }if(cur <= target){
+            ans = mid;
+            left = mid + 1;
+        }else{
+            right = mid - 1;
+        }
+    }
+    int small = check(arr, arrSize, ans);
+    int big = check(arr, arrSize, ans + 1);
+    free(addNums);
+    addNums = NULL;
+    return abs(small - target) <= abs(big - target) ? ans : ans + 1;
+}
