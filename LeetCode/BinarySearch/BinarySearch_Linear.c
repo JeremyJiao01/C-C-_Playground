@@ -43,3 +43,60 @@ int minEatingSpeed(int* piles, int pilesSize, int h) {
     }
     return left;
 }
+
+
+// # 410 分割数组的最大值
+// 思路：
+// 将分组 M 作为二分查找的判断
+// M 的取值范围是 1～numsSize
+// 二分搜索的值为前n项和a，当小于a的值为一个组
+// 使用二分搜索，如果二分搜索得出的分组数大于题目给的k
+// left = mid + 1
+
+int Max(int a, int b){
+    if(a > b){
+        return a;
+    }else{
+        return b;
+    }
+}
+
+int split(int* nums,int numsSize, int k){
+    int splits = 1;
+    // 当前区间的和
+    int curIntervalSum = 0;
+    int i = 0;
+    for (i = 0; i < numsSize; i++) {
+        // 尝试加上当前遍历的这个数
+        // 如果加上去超过了「子数组各自的和的最大值」
+        // 就不加这个数，另起炉灶
+        if (curIntervalSum + nums[i] > k) {
+            curIntervalSum = 0;
+            splits++;
+        }
+        curIntervalSum += nums[i];
+    }
+    return splits;
+}
+
+int splitArray(int* nums, int numsSize, int k) {
+    int max = 0;
+    int sum = 0;
+    int i = 0;
+    for(i = 0; i < numsSize; i++){
+        max = Max(nums[i], max);
+        sum += nums[i];
+    }
+    int left = max;
+    int right = sum;
+    while(left < right){
+        int mid = (left + right) >> 1;
+        int splits = split(nums, numsSize, mid);
+        if(splits > k){
+            left = mid + 1;
+        }else{
+            right = mid;
+        }
+    } 
+    return left;
+}
