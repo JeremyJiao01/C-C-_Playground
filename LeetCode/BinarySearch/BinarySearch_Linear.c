@@ -218,3 +218,71 @@ int minDays(int* bloomDay, int bloomDaySize, int m, int k) {
     }
     return left;
 }
+
+// # 小张刷题计划
+// 思路
+// 主函数
+// 二分搜索取值为：每天最多花多少时间 
+// 二分搜索取值范围：0～max(time)
+// 通过判断函数来移动左右指针
+// 判断函数
+// 通过给定每天最多花的时间来判断是否满足天数
+
+int max(int a, int b){
+    if(a > b){
+        return a;
+    }else{
+        return b;
+    }
+}
+
+int needDays(int* time, int timeSize, int T)
+{
+	int sum = 0, days = 1;
+	int maxVal = 0, flag = 1;
+	for (int i = 0; i < timeSize; i++)
+	{
+		maxVal = max(maxVal, time[i]);
+		int tmp = time[i];
+		if (sum + tmp > T)
+		{
+			if (flag)
+			{
+				sum = sum + tmp - maxVal;
+				flag = 0;
+			}
+			else
+			{
+				days++;
+				maxVal = 0;
+				sum = 0;
+				flag = 1;
+				i--;
+			}
+		}
+		else
+			sum += time[i];
+	}
+	return days;
+}
+
+
+int minTime(int* time, int timeSize, int m){
+    	// 小张T越大，完成题目的所需天数越少，days和t构成单调关系，通过二分T检验days找到符合条件的最小T
+	// 在写检验函数时注意小杨的存在
+	int sum = 0;
+	for (int i = 0; i< timeSize; i++)
+	{
+		sum += time[i];
+	}
+	int left = 0, right = sum;
+	while (left < right)
+	{
+		int mid = (left + right) / 2;
+		if (needDays(time, timeSize, mid) > m)
+			left = mid + 1;
+		else
+			right = mid;
+	}
+	return left;
+}
