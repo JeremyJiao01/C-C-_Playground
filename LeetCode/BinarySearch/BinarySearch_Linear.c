@@ -151,3 +151,70 @@ int shipWithinDays(int* weights, int weightsSize, int days) {
     }
     return left;
 }
+
+// # 1482 制作m束花所需的最少天数
+// 思路：
+// 主函数：
+// 目的是通过二分搜索找到采集花束最短时间
+// 若判断函数返回的是flase，即天数过少，则 left = mid + 1
+// 反之则返回right = mid
+// 判断函数：
+// 目的是通过给定天数，判断当前天数内能否采集完所有花
+
+int max(int a, int b){
+    if(a < b){
+        return b;
+    }else{
+        return a;
+    }
+}
+int min(int a, int b){
+    if(a > b){
+        return b;
+    }else{
+        return a;
+    }
+}
+
+bool judge(int* bloomDay, int bloomDaySize, int m, int k, int days){
+    int bouquets = 0;
+    int flowers = 0;
+    for(int i = 0; i < bloomDaySize && bouquets < m; i++){
+        if(bloomDay[i] <= days){
+            flowers++;
+            if(flowers == k){
+                bouquets++;
+                flowers = 0;
+            }
+        }else{
+            flowers = 0;
+        }
+    }
+    return bouquets < m;
+}
+
+int minDays(int* bloomDay, int bloomDaySize, int m, int k) {
+    if(m > bloomDaySize / k){
+        return -1;
+    }
+
+    int low = bloomDay[0];
+    int high = 0;
+    for(int i = 0; i < bloomDaySize; i++){
+        low = min(bloomDay[i], low);
+        high = max(bloomDay[i], high);
+    }
+    
+    int left = low;
+    int right = high;
+    while(left < right){
+        int mid = (left + right) >> 1;
+        int judgements = judge(bloomDay, bloomDaySize, m, k, mid);
+        if(judgements){
+            left = mid + 1;
+        }else{
+            right = mid;
+        }
+    }
+    return left;
+}
