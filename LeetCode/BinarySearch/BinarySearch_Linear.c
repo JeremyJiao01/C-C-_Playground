@@ -100,3 +100,54 @@ int splitArray(int* nums, int numsSize, int k) {
     } 
     return left;
 }
+
+
+// # 1011 在D天内送达包裹的能力
+// 思路：
+// 将船的载重设置为判断依据
+// 载重的取值范围为：max(nums) ~ sum
+// 计算出数组前n项和s
+// 当s超过载重数时，将其分为一组
+// 再使用二分搜索：
+// 若分组数超过days，则right = mid
+// 反之left = mid + 1
+
+int Max(int a, int b){
+    if(a > b){
+        return a;
+    }else{
+        return b;
+    }
+}
+
+int split(int* arrs, int arrsSize, int k){
+    int count = 0;
+    int splits = 1;
+    for(int i = 0; i < arrsSize; i++){
+        if(count + arrs[i] > k){
+            count = 0;
+            splits++;
+        }count += arrs[i];
+    }return splits;
+}
+
+int shipWithinDays(int* weights, int weightsSize, int days) {
+    int maxWeights = 0;
+    int sum = 0;
+    for (int i = 0; i < weightsSize; i++){
+        maxWeights = Max(weights[i], maxWeights);
+        sum += weights[i];
+    }
+    int left = maxWeights;
+    int right = sum;
+    while(left < right){
+        int mid = (left + right) >> 1;
+        int splits = split(weights, weightsSize, mid);
+        if(splits > days){
+            left = mid + 1;
+        }else{
+            right = mid;
+        }
+    }
+    return left;
+}
