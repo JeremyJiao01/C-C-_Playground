@@ -11,7 +11,7 @@ void randomizedQuicksort(int* nums, int left, int right){
 
 int randomizedPartition(int* nums, int left, int right){
     srand(time(NULL));
-    int randomNum = rand(); // 使用随机数找到pivote
+    int randomNum = rand() % (right + 1); // 使用随机数找到pivote
     swap(nums, right, randomNum); // 将pivote放在最右的位置
     return partition(nums, left, right);
 }
@@ -26,7 +26,7 @@ int partition(int* nums, int left, int right){
             i = i + 1;
             swap(nums, i, j);
         }
-        swap(nums, i + 1, r);
+        swap(nums, i + 1, right);
         return i + 1;
     }
 }
