@@ -76,3 +76,19 @@ int* shellSort(int* nums, int numsSize){
 	return nums;
 } 
 
+
+// # 283 移动0
+// 将数组中的0移动到后面，其他顺序不变
+void moveZeroes(int* nums, int numsSize) {
+    int cur = 0;
+    int after = 0;
+    while(after < numsSize){
+        if(nums[after] != 0){
+            nums[cur++] = nums[after];
+        }
+        ++after;
+    }
+    for(int i = cur; i < numsSize; i++){
+        nums[i] = 0;
+    }
+}
