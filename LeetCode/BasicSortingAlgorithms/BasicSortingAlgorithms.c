@@ -50,3 +50,29 @@ int* insertSorted2(int* nums, int numsSize){
     }
     return  nums;
 }
+
+// 希尔排序
+// 按照间隔初始值为数组长度，依次减半的方式
+
+void shellSortAlg(int* nums, int gap, int end){
+	int tmp = nums[end];
+	int j = end;
+	while(j >= gap && nums[j - gap] > tmp){
+		nums[j] = nums[j - gap];
+		j -= gqap;
+	}
+	nums[j] = tmp;
+} 
+
+
+int* shellSort(int* nums, int numsSize){
+	int gap = numsSize / 2;
+	while(gap >= 1){
+		for(int i = 1; i < numsSize; i++){
+			shellSortAlg(nums, gap, i);
+		}
+		gap /= 2;
+	}
+	return nums;
+} 
+
