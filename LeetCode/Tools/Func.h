@@ -28,5 +28,10 @@ int randomizedPartition(int* nums, int left, int right);
 int partition(int* nums, int left, int right);
 void sortArray(int* nums, int numsSize);
 
-//-----------------------------Chose Sort------------------------
+//-----------------------------Choose Sort------------------------
 void choseSortArray(int* nums, int numsSize);
+
+//-----------------------------Merge Sort-------------------------
+void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right);
+void mergeSort(int* nums, int numsSize, int left, int right);
+void mergeSortArr(int* nums, int numsSize);

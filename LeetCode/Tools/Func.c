@@ -85,6 +85,7 @@ void testSortTime(int *nums, int numsSize, void(*sort_func)(int*, int)){
     int result = isSorted(nums, numsSize);
     if(result){
         printf("已排序\n");
+        Display(nums, numsSize);
     } else{
         printf("未排序\n");
         Display(nums, numsSize);
@@ -139,4 +140,44 @@ void choseSortArray(int* nums, int numsSize) {
         }
         swap(nums, minval, i);
     }
+}
+
+// ---------------------merge sort-----------------------------------
+void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right){
+    int len = right - left + 1;
+    int* tempArr = (int*)malloc(len * sizeof(int));
+    int i = left;
+    int j = mid + 1;
+    int k = 0;
+    while(i <= mid && j <= right){
+        if(nums[i] <= nums[j]){
+            tempArr[k++] = nums[i++];
+        }else{
+            tempArr[k++] = nums[j++];
+        }
+    }
+    while(i <= mid){
+        tempArr[k++] = nums[i++];
+    }
+    while(j <= right){
+        tempArr[k++] = nums[j++];
+    }
+    int b = 0;
+    for(int a = left; a <= right; a++){
+        nums[a] = tempArr[b++];
+    }
+}
+
+void mergeSort(int* nums, int numsSize, int left, int right){
+    if(left == right){
+        return;
+    }
+    int mid = (left + right) / 2;
+    mergeSort(nums, numsSize, left, mid);
+    mergeSort(nums, numsSize, mid + 1, right);
+    mergeTwoArr(nums, numsSize, left, mid, right);
+}
+
+void mergeSortArr(int* nums, int numsSize){
+    mergeSort(nums, numsSize, 0, numsSize - 1);
 }
