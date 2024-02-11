@@ -18,6 +18,7 @@ void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right){
 	int i = left;
 	int j = mid + 1;
 	int k = 0;
+	// 判断指针下标是否越界
 	while(i <= mid && j <= right){
 		if(nums[i] <= nums[j]){
 			tempArr[k++] = nums[i++];
@@ -25,13 +26,15 @@ void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right){
 			tempArr[k++] = nums[j++];
 		}
 	}
+	// 剩下的直接将数组中的值复制进去
 	while(i <= mid){
 		tempArr[k++] = nums[i++];
 	}
 	while(j <= right){
 		tempArr[k++] = nums[j++];
 	}
-	int b = 0;
+	// 重新排列原数组
+	int b = 0; 
 	for(int a = left; a <= right; a++){
 		nums[a] = temp[b++];
 	}
