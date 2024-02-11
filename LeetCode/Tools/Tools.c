@@ -11,7 +11,7 @@ int main(){
 
     int* randomArr = generateRandomArray(genNum);
     Display(randomArr, genNum);
-    testSortTime(randomArr, genNum, choseSortArray);
+//    testSortTime(randomArr, genNum, choseSortArray);
 
     return 0;
 }
