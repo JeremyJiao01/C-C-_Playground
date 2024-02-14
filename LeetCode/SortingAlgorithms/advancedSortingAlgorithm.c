@@ -1,14 +1,22 @@
-// mergeSort
+// mergeSort （优化）
 // 使用递归的方法，不断将数组分为两个有序的部分
 // 在对数组进行有序合并
+
+#define INSERTION_SORT_THRESHOLD = 47 // 当列表大小小于47时使用插入排序
+				      // 此参数应当是超参数，但是为方便设为47
 
 void mergeSort(int* nums, int numsSize, int left, int right){
 	if(left == right){
 		return;
 	}
+	if(right - left <= INSERTION_SORT_THRESHOLD){
+		insertionSort(nums, left, right);
+		return;
+	} // 优化1：小区间内使用插入排序
 	int mid = (left + right) / 2;
 	mergeSort(nums, left, mid);
 	mergeSort(nums, mid + 1, right);
+
 	mergeTwoArr(nums, numsSize, left, mid, right);
 }
 
@@ -41,6 +49,8 @@ void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right){
 }
 
 int* sortArr(int* nums, int numsSize){
+	int* tmp = (int*)malloc(numsSize * sizeof(int));
+	// 优化3：全局使用同一个临时数组
 	mergeSort(nums, numsSize, 0, len - 1);
 	return nums;
 }
