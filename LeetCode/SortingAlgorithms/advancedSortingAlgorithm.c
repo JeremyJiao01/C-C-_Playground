@@ -5,7 +5,7 @@
 #define INSERTION_SORT_THRESHOLD = 47 // 当列表大小小于47时使用插入排序
 				      // 此参数应当是超参数，但是为方便设为47
 
-void mergeSort(int* nums, int numsSize, int left, int right){
+void mergeSort(int* nums, int numsSize, int left, int right, int* tmp){
 	if(left == right){
 		return;
 	}
@@ -14,15 +14,14 @@ void mergeSort(int* nums, int numsSize, int left, int right){
 		return;
 	} // 优化1：小区间内使用插入排序
 	int mid = (left + right) / 2;
-	mergeSort(nums, left, mid);
-	mergeSort(nums, mid + 1, right);
+	mergeSort(nums, left, mid, tmp);
+	mergeSort(nums, mid + 1, right, tmp);
 
-	mergeTwoArr(nums, numsSize, left, mid, right);
+	mergeTwoArr(nums, numsSize, left, mid, right, tmp);
 }
 
-void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right){
+void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right, int* tmpArr){
 	int len = right - left + 1;
-	int* tempArr = (int*)malloc(len * sizeof(int));
 	int i = left;
 	int j = mid + 1;
 	int k = 0;
@@ -51,7 +50,7 @@ void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right){
 int* sortArr(int* nums, int numsSize){
 	int* tmp = (int*)malloc(numsSize * sizeof(int));
 	// 优化3：全局使用同一个临时数组
-	mergeSort(nums, numsSize, 0, len - 1);
+	mergeSort(nums, numsSize, 0, len - 1, tmp);
 	return nums;
 }
 
@@ -126,4 +125,61 @@ void rotate(int* nums, int numsSize, int k){
     reverse(nums, 0, numsSize - 1);
     reverse(nums, 0, k - 1);
     reverse(nums, k, numsSize - 1);
+}
+
+// # 170 求逆序数（困难）
+// 思路：
+// 使用归并排序分而治之的思想
+int mergingTwoArr(int* record, int left, int mid, int right, int* tmp){
+    int len = right - left + 1;
+    int i = left;
+    int j = mid + 1;
+    int count = 0;
+    int k = 0;
+    while(i <= mid && j <= right){
+        if(record[i] <= record[j]){
+            tmp[k++] = record[i++];
+        }else{
+            tmp[k++] = record[j++];
+            count += (mid - i + 1);
+            // 这里取 mid - i + 1的意思是
+            // mid位于左边一组中，若左边的元素i大于右边的元素j
+            // 则mid到i之间所有数都大于右边的元素j
+        }
+    }
+    while(i <= mid){
+        tmp[k++] = record[i++];
+    }
+    while(j <= right){
+        tmp[k++] = record[j++];
+    }
+    int b = 0;
+    for(int i = left; i <= right; i++){
+        record[i] = tmp[b++];
+    }
+    return count;
+}
+
+int dividePairs(int* record, int left, int right, int* tmp){
+    if(left == right){
+        return 0;
+    }
+    int mid = left + (right - left) / 2;
+    int leftParis = dividePairs(record, left, mid, tmp);
+    int rightParis = dividePairs(record, mid + 1, right, tmp);
+
+    if(record[mid] <= record[mid + 1]){
+        return leftParis + rightParis;
+    }
+    int acrossParis = mergingTwoArr(record, left, mid, right, tmp);
+    return leftParis + rightParis + acrossParis;
+}
+
+
+int reversePairs(int* record, int recordSize) {
+    if(recordSize < 2){
+        return 0;
+    }
+    int* tmp = (int*)malloc(recordSize * sizeof(int));
+    return dividePairs(record, 0, recordSize - 1, tmp);
 }
