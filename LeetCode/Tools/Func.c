@@ -148,7 +148,7 @@ void mergeSortArr(int* nums, int numsSize){
 }
 
 // ---------------------Quick Sort-----------------------------------
-int quickSortPartition(int* nums, int left, int right){
+int quickSortPartition_randomPivot(int* nums, int left, int right){
     srand(time(NULL));
     int randomNum = left + (rand() % (right - left + 1));
     swap(nums, left, randomNum);
@@ -168,18 +168,63 @@ int quickSortPartition(int* nums, int left, int right){
     return dividePos;
 }
 
-void quickSort(int* nums, int left, int right){
+int quickSortPartition_threePart(int* nums, int left, int right){
+    int mid = (left + right) / 2;
+    if (nums[left] > nums[mid]) {
+        swap(nums, left, mid);
+    }
+    if (nums[left] > nums[right]) {
+        swap(nums, left, right);
+    }
+    if (nums[right] < nums[mid]) {
+        swap(nums, right, mid);
+    }
+
+    swap(nums, mid, right - 1);
+    int tmp = nums[right - 1];
+    int i = left + 1;
+    int j = right - 2;
+    while(i <= j){
+        if(nums[i] > tmp){
+            while(nums[j] > tmp){
+                if(i == j){
+                    swap(nums, i, right - 1);
+                    return i;
+                }
+                j--;
+            }
+            swap(nums, i, j);
+            i++;
+        }else{
+            i++;
+        }
+    }
+    return i;
+}
+
+void quickSort(int* nums, int left, int right, int mode){
     if(left >= right){
         return;
     }
-    int p = quickSortPartition(nums, left, right);
-    quickSort(nums, left, p - 1);
-    quickSort(nums, p + 1, right);
+    int p = 0;
+    switch(mode){
+        case 1:
+            p = quickSortPartition_randomPivot(nums, left, right);
+            break;
+        case 2:
+            p = quickSortPartition_threePart(nums, left, right);
+            break;
+    }
+    quickSort(nums, left, p - 1, mode);
+    quickSort(nums, p + 1, right, mode);
 }
 
 void quickSortArr(int* nums, int numsSize){
     if(numsSize < 2){
         return;
     }
-    quickSort(nums, 0, numsSize - 1);
+    printf("Please Choose Mode\n 1 : randomPivot\n 2 : threeDivided\n");
+    int mode = 0;
+    scanf("%d\n", &mode);
+    quickSort(nums, 0, numsSize - 1, mode);
 }

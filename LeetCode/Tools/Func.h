@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdbool.h>
-#define genNum 20 // size of generated array
+#define genNum 10 // size of generated array
 int generateNums(int n);
 
 void Display(int* nums, int numsSize);
@@ -31,6 +31,7 @@ void mergeSort(int* nums, int numsSize, int left, int right);
 void mergeSortArr(int* nums, int numsSize);
 
 //-----------------------------Quick Sort-----------------------
-int quickSortPartition(int* nums, int left, int right);
-void quickSort(int* nums, int left, int right);
+int quickSortPartition_randomPivot(int* nums, int left, int right);
+int quickSortPartition_threePart(int* nums, int left, int right);
+void quickSort(int* nums, int left, int right, int mode);
 void quickSortArr(int* nums, int numsSize);

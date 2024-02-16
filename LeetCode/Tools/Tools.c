@@ -16,5 +16,6 @@ int main(){
 //    for(int i = 0; i < genNum; i++){
 //        printf("%d ", nums[i]);
 //    }
+
     return 0;
 }

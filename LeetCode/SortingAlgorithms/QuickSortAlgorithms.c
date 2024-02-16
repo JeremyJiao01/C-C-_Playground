@@ -46,3 +46,43 @@ int* sortArr(int* nums, int numsSize){
 	return nums;
 }
 
+// 快速排序2
+// 三分法
+// 在快排的过程中，每一次我们要取一个元素作为枢纽值，
+// 以这个数字来将序列划分为两部分。
+// 在此我们采用三数取中法，也就是取左端、中间、右端三个数，
+// 然后进行排序，将中间数作为枢纽值。
+
+int partition(int* nums, int left, int right){
+	int mid = (left + right) / 2;
+    if (nums[left] > nums[mid]) {
+        swap(nums, left, mid);
+    }
+    if (nums[left] > nums[right]) {
+        swap(nums, left, right);
+    }
+    if (nums[right] < nums[mid]) {
+        swap(nums, right, mid);
+    }
+
+	swap(nums, mid, right - 1);
+	int tmp = nums[right - 1];
+	int i = left + 1;
+	int j = right - 1;
+	while(i <= j){
+		if(nums[i] > tmp){
+			while(nums[j] > tmp){
+				if(i == j){
+					swap(nums, i, right - 1);
+					return i;
+				}
+				j--;
+			}
+			swap(nums, i, j);
+			i++;
+		}else{
+			i++;
+		}
+	}
+	return i;
+}
