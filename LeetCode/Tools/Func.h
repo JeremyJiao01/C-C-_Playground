@@ -22,12 +22,6 @@ int compare(const void *a, const void *b);
 
 void testSortTime(int *nums, int numsSize, void(*sort_func)(int *, int));
 
-//-----------------------------QUICK SORT-------------------------
-void randomizedQuicksort(int* nums, int left, int right);
-int randomizedPartition(int* nums, int left, int right);
-int partition(int* nums, int left, int right);
-void sortArray(int* nums, int numsSize);
-
 //-----------------------------Choose Sort------------------------
 void choseSortArray(int* nums, int numsSize);
 
@@ -35,3 +29,8 @@ void choseSortArray(int* nums, int numsSize);
 void mergeTwoArr(int* nums, int numsSize, int left, int mid, int right);
 void mergeSort(int* nums, int numsSize, int left, int right);
 void mergeSortArr(int* nums, int numsSize);
+
+//-----------------------------Quick Sort-----------------------
+int quickSortPartition(int* nums, int left, int right);
+void quickSort(int* nums, int left, int right);
+void quickSortArr(int* nums, int numsSize);

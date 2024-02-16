@@ -94,41 +94,6 @@ void testSortTime(int *nums, int numsSize, void(*sort_func)(int*, int)){
     printf("Time Spent is %.6f second\n", time_spent);
 }
 
-// -----------------------Sorting Algorithms----------------------------
-
-void randomizedQuicksort(int* nums, int left, int right){
-    if(left < right){
-        int pos = randomizedPartition(nums, left, right);
-        randomizedQuicksort(nums, left, pos - 1);
-        randomizedQuicksort(nums, pos + 1, right);
-    }
-}
-
-int randomizedPartition(int* nums, int left, int right){
-    int randomNum = rand() % genNum; // 使用随机数找到pivote
-    swap(nums, right, randomNum); // 将pivote放在最右的位置
-    return partition(nums, left, right);
-}
-
-int partition(int* nums, int left, int right){
-    // 以pivote为标准，将数组分为两部分
-    // 左边小于pivote，右边大于pivote
-    int pivot = nums[right];
-    int i = left - 1;
-    for(int j = left; j <= right - 1; ++j){
-        if(nums[j] <= pivot){
-            i = i + 1;
-            swap(nums, i, j);
-        }
-        swap(nums, i + 1, right);
-        return i + 1;
-    }
-}
-
-void sortArray(int* nums, int numsSize) {
-    randomizedQuicksort(nums, 0, numsSize - 1);
-}
-
 // -------------------Basic Sort---------------------------------------
 void choseSortArray(int* nums, int numsSize) {
     for(int i = 0; i < numsSize - 1; i++){
@@ -180,4 +145,41 @@ void mergeSort(int* nums, int numsSize, int left, int right){
 
 void mergeSortArr(int* nums, int numsSize){
     mergeSort(nums, numsSize, 0, numsSize - 1);
+}
+
+// ---------------------Quick Sort-----------------------------------
+int quickSortPartition(int* nums, int left, int right){
+    srand(time(NULL));
+    int randomNum = left + (rand() % (right - left + 1));
+    swap(nums, left, randomNum);
+
+    int dividePos = left;
+    int pivot = nums[left];
+    // 这里的循环不变量是 dividePos，即
+    // [left + 1, dividepos] < pivot
+    // [dividepos + 1, right) >= pivot
+    for(int i = left + 1; i <= right; i++){
+        if(nums[i] < pivot){
+            dividePos++;
+            swap(nums, i, dividePos);
+        }
+    }
+    swap(nums, left, dividePos);
+    return dividePos;
+}
+
+void quickSort(int* nums, int left, int right){
+    if(left >= right){
+        return;
+    }
+    int p = quickSortPartition(nums, left, right);
+    quickSort(nums, left, p - 1);
+    quickSort(nums, p + 1, right);
+}
+
+void quickSortArr(int* nums, int numsSize){
+    if(numsSize < 2){
+        return;
+    }
+    quickSort(nums, 0, numsSize - 1);
 }
