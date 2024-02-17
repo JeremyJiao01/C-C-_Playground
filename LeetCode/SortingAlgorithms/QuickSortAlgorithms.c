@@ -111,3 +111,27 @@ int quickselect(int *nums, int l, int r, int k) {
 int findKthLargest(int *nums, int numsSize, int k) {
     return quickselect(nums, 0, numsSize - 1, numsSize - k);
 }
+
+// 循环不变量练习
+// # 26 删除有序数组中的重复项
+// 思路：
+// 使用双指针
+// 相当于把不重复的元素移动到左边
+// 若后一个 j 与前一个 i 值相等，则 j++
+// 若不相等，则 i++; swap(nums, i, j); j++;
+// 优化：当数组中没有重复元素，函数仍会原地复制一遍，
+// 因此我们可以添加一个小判断，当 q - p > 1 时，才进行复制
+int removeDuplicates(int* nums, int numsSize) {
+    int i = 0;
+    int j = 1;
+    while(j <= numsSize - 1){
+        if(nums[i] != nums[j]){
+            if(j - i > 1){
+                nums[i + 1] = nums[j];
+            }
+            i++;
+        }
+        j++;
+    }
+    return i + 1;
+}
