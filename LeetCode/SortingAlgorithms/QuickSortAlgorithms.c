@@ -86,3 +86,28 @@ int partition(int* nums, int left, int right){
 	}
 	return i;
 }
+
+//-------------------------题目----------------------
+// # 215 求数组中第k大的数
+// 使用快速排序的思想
+// 只要某次划分的 qqq 为倒数第 kkk 个下标的时候，我们就已经找到了答案
+int quickselect(int *nums, int l, int r, int k) {
+    if (l == r)
+        return nums[k];
+    int partition = nums[l], i = l - 1, j = r + 1;
+    while (i < j) {
+        do i++; while (nums[i] < partition);
+        do j--; while (nums[j] > partition);
+        if (i < j) {
+            int tmp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = tmp;
+        }
+    }
+    if (k <= j)return quickselect(nums, l, j, k);
+    else return quickselect(nums, j + 1, r, k);
+}
+
+int findKthLargest(int *nums, int numsSize, int k) {
+    return quickselect(nums, 0, numsSize - 1, numsSize - k);
+}
