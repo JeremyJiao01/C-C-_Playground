@@ -87,6 +87,61 @@ int partition(int* nums, int left, int right){
 	return i;
 }
 
+// 快速排序3
+// 使用指针对撞的快速排序
+// 由于随机选择pivot在极端情况下会随机到相同的元素
+// 使用指针对撞可以让于切分元素相等的元素分散到数组的两侧
+void swap(int* nums, int i, int j){
+	int tmp = nums[i];
+	nums[i] = nums[j];
+	nums[j] = tmp;
+}
+
+int partition(int* nums, int left, int right){
+	srand(time(NULL));
+	int randNum = left + (rand() % (right - left + 1));
+	swap(nums, left, randNum);
+
+	int tmp = nums[left];
+	int i = left + 1;
+	int j = right;
+	while(true){
+		while(i <= j && nums[i] < tmp){
+			i++;
+		}
+		while(i <= j && nums[j] > tmp){
+			j--;
+		}
+		if(i > j){
+			break;
+		}
+		swap(nums, i, j);
+		i++;
+		j--;
+	}
+	swap(nums, left, j);
+	// 交换left和j能够保证left放在最终应该放在的位置
+	return i;
+}
+
+void quickSort(int* nums, int left, int right){
+	if(left >= right){
+		return;
+	}
+	int p = partition(nums, left, right);
+	quickSort(nums, left, p - 1);
+	quickSort(nums, p + 1, right);
+}
+
+int* sortArr(int* nums, int numsSize){
+	if(numsSize < 2){
+		return nums; 
+	}
+	quickSort(nums, 0, numsSize - 1);
+	return nums;
+}
+
+
 //-------------------------题目----------------------
 // # 215 求数组中第k大的数
 // 使用快速排序的思想
