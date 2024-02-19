@@ -141,6 +141,58 @@ int* sortArr(int* nums, int numsSize){
 	return nums;
 }
 
+// 快速排序3
+// 三向切分的快速排序
+// 在变量 i 遍历的过程中，设置两个变量 lt 和 gt，保持下面的循环不变量的性质。
+// 在循环的过程中，
+// 总有 [left + 1, lt] < pivot 、
+// [lt + 1, i) = pivot、
+// [gt, right] >= pivot 成立。
+// 首先，把与 pivot 的元素的关系分得更细了，等于 pivot 的元素被单独分到了一组；
+// 除了 i 之外的区间都使用闭区间，这是因为 i 是循环变量，表义为「遍历之前的元素」性质更好掌握。
+void swap(int* nums, int i, int j){
+	int tmp = nums[i];
+	nums[i] = nums[j];
+	nums[j] = tmp;
+}
+
+void quickSort(int* nums, int left, int right){
+	if(left >= right){
+		return;
+	}
+	srand(time(NULL));
+	int randNum = left + (rand() % (right - left + 1));
+	swap(nums, left, randNum);
+
+	int i = left + 1;
+	int le = left;
+	int j = right + 1;
+	int tmp = nums[left];
+	while(i < j){
+		if(nums[i] < tmp){
+			lt++;
+			swap(nums, i, lt);
+			i++;
+		}else if(nums[i] == tmp){
+			i++;
+		}else{
+			j--;
+			swap(nums, i, j);
+		}
+	}
+	swap(nums, left, lt);
+	quickSort(nums, left, lt - 1);
+	quickSort(nums, j, right);
+}
+
+int* sortArr(int* nums, int numsSize){
+	if(numsSize < 2){
+		return nums; 
+	}
+	quickSort(nums, 0, numsSize - 1);
+	return nums;
+}
+
 
 //-------------------------题目----------------------
 // # 215 求数组中第k大的数
