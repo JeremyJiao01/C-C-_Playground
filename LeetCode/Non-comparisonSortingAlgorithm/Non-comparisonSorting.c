@@ -164,3 +164,40 @@ void bucketSort(int* nums, int numsSize){
 	}
 }
 
+// ----------------------题目---------------------
+// # 41
+// 哈希表是一个可以支持快速查找的数据结构
+// 对于一个长度为 N 的数组，
+// 其中没有出现的最小正整数只能在[1,N+1]中。
+// 这是因为如果[1,N]都出现了，
+// 那么答案是 N+1，
+// 否则答案是[1,N]中没有出现的最小正整数。
+// 把不在[1,N]范围内的数修改成任意一个大于N的数
+// 这样一来，数组中的所有数就都是正数了
+// 因此我们就可以将「标记」表示为「负号」
+// 流程如下：
+//     我们将数组中所有小于等于0的数修改为N+1；
+//     我们遍历数组中的每一个数x，如果|x|属于[1,N]
+//     那么我们给数组中的第|x|-1位置的数添加一个负号
+//     （注意如果它已经有负号，不需要重复添加）
+//     在遍历完成之后，如果数组中的每一个数都是负数，那么答案是 N+1
+//     否则答案是第一个正数的位置加1
+int firstMissingPositive(int* nums, int numsSize){
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] <= 0){
+            nums[i] = numsSize + 1;
+        }
+    }
+    for(int i = 0; i < numsSize; i++){
+        int num = abs(nums[i]);
+        if(num <= numsSize){
+            nums[num - 1] = -abs(nums[num - 1]); 
+        }
+    }
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] > 0){
+            return i + 1;
+        }
+    }
+    return numsSize + 1;
+}
