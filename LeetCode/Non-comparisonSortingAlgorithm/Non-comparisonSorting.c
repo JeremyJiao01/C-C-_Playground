@@ -228,3 +228,23 @@ int* findDuplicates(int* nums, int numsSize, int* returnSize){
     *returnSize = pos;
     return ans;
 }
+
+// # 448
+// 具体来说，遍历 nums，每遇到一个数 x，就让 nums[x-1] 增加 n。
+// 由于nums中所有数均在[1,n]中,增加以后,这些数必然大于n。
+// 最后我们遍历nums，若 nums[i]未大于 n，就说明没有遇到过数 i+1。
+// 这样我们就找到了缺失的数字。
+int* findDisappearedNumbers(int* nums, int numsSize, int* returnSize){
+    for(int i = 0; i < numsSize; i++){
+        int x = (nums[i] - 1) % numsSize;
+        nums[x] += numsSize;
+    }
+    int* ret = (int*)malloc(sizeof(int) * numsSize);
+    *returnSize = 0;
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] <= numsSize){
+            ret[(*returnSize)++] = i + 1;
+        }
+    }
+    return ret;
+}
