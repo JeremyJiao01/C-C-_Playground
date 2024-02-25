@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdbool.h>
+#include <string.h>
 #define genNum 10 // size of generated array
 int generateNums(int n);
 
