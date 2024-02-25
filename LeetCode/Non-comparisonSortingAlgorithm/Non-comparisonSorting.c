@@ -201,3 +201,30 @@ int firstMissingPositive(int* nums, int numsSize){
     }
     return numsSize + 1;
 }
+
+// # 442 数组中重复的数据（找出重复出现过两次的元素，O(n)）
+// 由于给定的 n 个数都在 [1, n] 的范围内，
+// 如果有数字出现了两次，就意味着 [1,n] 中有数字没有出现过。
+// 如果 i 恰好出现了一次，那么将 i 放在数组中下标为 i−1 的位置即可；
+// 如果 i 出现了两次，
+// 那么我们希望其中的一个 i 放在数组下标中为i-1的位置，
+// 另一个i放置在任意「不冲突」的位置j。
+// 也就是说，数j+1没有在数组中出现过。
+int* findDuplicates(int* nums, int numsSize, int* returnSize){
+    for(int i = 0; i < numsSize; i++){
+        while(nums[i] != nums[nums[i] - 1]){
+            int tmp = nums[i];
+            nums[i] = nums[tmp - 1];
+            nums[tmp - 1] = tmp;
+        }
+    }
+    int* ans = (int*)malloc(sizeof(int) * numsSize);
+    int pos = 0;
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] - 1 != i){
+            ans[pos++] = nums[i];
+        }
+    }
+    *returnSize = pos;
+    return ans;
+}
