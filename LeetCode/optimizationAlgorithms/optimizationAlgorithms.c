@@ -60,6 +60,71 @@ int lengthOfLongestSubstring(char* s){
 	return res;	
 }
 
+// # 76 覆盖最小子串
+// 以 输入: S = "ADOBECODEBANC", T = "ABC" 为例
+// 同样是使用滑动窗口的办法
+// 我们需要对T内的字母进行频数统计
+// 设置一个变量 distance 表示 T 中一共有多少个不同的字母
+char minWindows(char* s, char* t){
+	int window[128] = {0};
+	int pattern[128] = {0};
+	int A = 'A';
+	int len = strlen(t);
+	for(int i = 0; i < len; i++){
+		pattern[t[i] - A];
+	}
+	int distance = 0; 
+	//  T 中存在的字符数
+	for(int i = 0; i < 128; i++){
+		if(pattern[i] > 0){
+			// pattern[i] > 0 表示 T 中存在 i 代表的元素
+			distance++;
+		}
+	}
+	int slen = strlen(s);
+	int start = 0;
+	int left = 0;
+	int right = 0;
+	int match = 0; // 用于保存[left, right)中与T相同字符的数量
+	int minLen = slen + 1;
+
+	while(right < slen){
+		rightChar = s[right];
+		if(pattern[rightChar - A] > 0){
+			window[rightChar - A]++;
+			// 在滑动窗口中记录存在的元素
+			if(window[rightChar - A] == pattern[rightChar - A]){
+				match++;
+				// 当前元素存在于 T 中
+			}
+		}
+		right++;
+		while(match == distance){
+			// 当所需元素都在[left, right)中，则需要保存此时的长度
+			if(right - left < minLen){
+				start = left;
+				minLen = right - left;
+			}
+			// 考虑左边界向右边走
+			leftchar = s[left];
+			if(pattern[leftchar - A] > 0){
+				window[leftchar - A]--;
+				// 因为此时left需要++，所以要在window中去除当前元素
+				if(window[leftchar - A] < pattern[leftchar - A]){
+					match--;
+				}
+			}
+			left++;
+		}
+	}
+	char returnString[] = {0};
+	for(int i = start; i < (start + minLen); i++){
+		returnString[i] = s[i];
+	}  
+	return minLen == slen + 1 ? "" : returnString;
+}
+
+
 
 
 
