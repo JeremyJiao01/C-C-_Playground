@@ -226,3 +226,50 @@ int* findAnagrams(char * s, char * p, int* returnSize){
     return res;                
 }
 
+// #567 字符串的排序
+bool checkInclusion(char* s1, char* s2) {
+    int s1Len = strlen(s1);
+    int s2Len = strlen(s2);
+    if(s1Len > s2Len){
+        return false;
+    }
+    int cnt[26] = {0};
+    memset(cnt, 0, sizeof(cnt));
+    for(int i = 0; i < s1Len; i++){
+        --cnt[s1[i] - 'a'];
+        ++cnt[s2[i] - 'a'];
+    }
+    int diff = 0;
+    for(int i = 0; i < 26; i++){
+        if(cnt[i] != 0){
+            diff++;
+        }
+    }
+    if(diff == 0){
+        return true;
+    }
+    for(int i = s1Len; i < s2Len; i++){
+        int x = s2[i] - 'a', y = s2[i - s1Len] - 'a';
+        if(x == y){
+            continue;
+        }
+        if(cnt[x] == 0){
+            ++diff;
+        }else if(cnt[x] == -1){
+            --diff;
+        }
+        ++cnt[x];
+
+        if(cnt[y] == 0){
+            ++diff;
+        }else if(cnt[y] == 1){
+            --diff;
+        }
+        --cnt[y];
+        
+        if(diff == 0){
+            return true;
+        }
+    }
+    return false;
+}
