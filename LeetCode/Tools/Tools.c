@@ -35,9 +35,20 @@ int main(){
 //        printf("%d ", tmp[i][i]);
 //    }
 //    printf("%d", nums);
-
-    char s[] = "au";
-    int n = lengthOfLongestSubstring(s);
+    char s[] = "ABCDE";
+    int returnSize = 5;
+    char* returnCharArr = (char*)malloc(sizeof(char) * returnSize);
+    for(int i = 0; i < returnSize; i++){
+        if(i == returnSize){
+            returnCharArr[i] = '\0';
+        }else{
+            returnCharArr[i] = s[i];
+        }
+    }
+    int n = strlen(returnCharArr);
     printf("%d", n);
+    for(int i = 0; i < returnSize; i++){
+        printf("%s", returnCharArr[i]);
+    }
     return 0;
 }

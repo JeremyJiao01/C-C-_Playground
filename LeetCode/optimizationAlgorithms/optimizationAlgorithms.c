@@ -71,7 +71,7 @@ char minWindows(char* s, char* t){
 	int A = 'A';
 	int len = strlen(t);
 	for(int i = 0; i < len; i++){
-		pattern[t[i] - A];
+		pattern[t[i] - A]++;
 	}
 	int distance = 0; 
 	//  T 中存在的字符数
@@ -117,13 +117,16 @@ char minWindows(char* s, char* t){
 			left++;
 		}
 	}
-	char returnString[] = {0};
-	for(int i = start; i < (start + minLen); i++){
-		returnString[i] = s[i];
-	}  
-	return minLen == slen + 1 ? "" : returnString;
+    if(minLen == sLen + 1){
+        return "";
+    }else{
+        int returnSize = start + minLen;
+        char* returnCharArr = (char*)malloc(sizeof(char) * returnSize);
+        *returnCharArr = '\0';
+        strncat(returnCharArr, s, returnSize);
+        return returnCharArr;
+    }
 }
-
 
 
 
