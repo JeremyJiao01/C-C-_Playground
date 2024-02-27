@@ -120,14 +120,31 @@ char minWindows(char* s, char* t){
     if(minLen == sLen + 1){
         return "";
     }else{
-        int returnSize = start + minLen;
+        int returnSize = minLen;
         char* returnCharArr = (char*)malloc(sizeof(char) * returnSize);
         *returnCharArr = '\0';
-        strncat(returnCharArr, s, returnSize);
+        strncat(returnCharArr, s + start, returnSize);
         return returnCharArr;
     }
 }
 
-
+// # 209 长度最小的子数组
+// 找出给定数组中，其总和大于等于target的长度最小的连续子数组
+int minSubArrayLen(int target, int* nums, int numsSize) {
+    int left = 0;
+    int right = 0;
+    int count = 0;
+    int minLen = numsSize + 1;
+    while(right < numsSize){
+        count += nums[right];
+        while(count >= target){
+            count -= nums[left];
+            minLen = minLen < (right - left + 1) ? minLen : (right - left + 1);
+            left++;
+        }
+        right++;
+    }
+    return minLen == (numsSize + 1) ? 0 : minLen; 
+}
 
 

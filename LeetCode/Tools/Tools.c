@@ -4,22 +4,25 @@
 
 #include "Func.h"
 
-int lengthOfLongestSubstring(char* s){
-    int len = strlen(s);
-    if(len < 2){
-        return len;
-    }
-    int Hash[128] = {-1};
-    int res = 1;
+int minSubArrayLen(int target, int* nums, int numsSize) {
     int left = 0;
-    for(int right = 0; right < len; right++){
-        if(Hash[s[right]] != -1){
-            left = left > (Hash[s[right]] + 1) ? left : (Hash[s[right]] + 1);
+    int right = 0;
+    int count = 0;
+    int start = 0;
+    int minLen = 0;
+    while(right < numsSize){
+        count += nums[right];
+        while(count > target){
+            count -= nums[left];
+            left++;
         }
-        Hash[s[right]] = right;
-        res = res > (right - left + 1) ? res : (right - left + 1);
+        if(count == target){
+            minLen = right - left + 1;
+            // start = left;
+        }
+        right++;
     }
-    return res;
+    return minLen;
 }
 
 int main(){
@@ -28,27 +31,13 @@ int main(){
 //    int* randomArr = generateRandomArray(genNum);
 //    Display(randomArr, genNum);
 //    testSortTime(randomArr, genNum, quickSortArr);
-//    int record[] = {1, 1, 1};
-//    int nums = removeDuplicates(&record, 3);
+    int record[] = {1, 2, 3, 4, 5};
+    int nums = minSubArrayLen(11, &record, 5);
 //    int tmp[5][5] = {0};
 //    for(int i = 0; i < 5; i++){
 //        printf("%d ", tmp[i][i]);
 //    }
-//    printf("%d", nums);
-    char s[] = "ABCDE";
-    int returnSize = 5;
-    char* returnCharArr = (char*)malloc(sizeof(char) * returnSize);
-    for(int i = 0; i < returnSize; i++){
-        if(i == returnSize){
-            returnCharArr[i] = '\0';
-        }else{
-            returnCharArr[i] = s[i];
-        }
-    }
-    int n = strlen(returnCharArr);
-    printf("%d", n);
-    for(int i = 0; i < returnSize; i++){
-        printf("%s", returnCharArr[i]);
-    }
+    printf("%d", nums);
+
     return 0;
 }
