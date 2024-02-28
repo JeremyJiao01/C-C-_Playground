@@ -4,25 +4,31 @@
 
 #include "Func.h"
 
-int minSubArrayLen(int target, int* nums, int numsSize) {
-    int left = 0;
+int characterReplacement(char * s, int k){
+    int window[256] = {0};
     int right = 0;
-    int count = 0;
-    int start = 0;
-    int minLen = 0;
-    while(right < numsSize){
-        count += nums[right];
-        while(count > target){
-            count -= nums[left];
-            left++;
+    int left = 0;
+    int A = 'A';
+    int sLen = strlen(s);
+    int maxLen = 1;
+    window[s[0] - A]++;
+    while(right < sLen){
+        if(window[s[right] - A] == 0){
+            k--;
+            while(k < 0){
+                window[s[left] - A]--;
+                if(window[s[left] - A] == 0){
+                    k++;
+                }
+                left++;
+            }
         }
-        if(count == target){
-            minLen = right - left + 1;
-            // start = left;
+        if(k >= 0){
+            maxLen = maxLen > (right - left + 1) ? maxLen : (right - left + 1);
         }
         right++;
     }
-    return minLen;
+    return maxLen;
 }
 
 int main(){
@@ -31,8 +37,8 @@ int main(){
 //    int* randomArr = generateRandomArray(genNum);
 //    Display(randomArr, genNum);
 //    testSortTime(randomArr, genNum, quickSortArr);
-    int record[] = {1, 2, 3, 4, 5};
-    int nums = minSubArrayLen(11, &record, 5);
+    char record[] = "AABACBBA";
+    int nums = characterReplacement(record, 2);
 //    int tmp[5][5] = {0};
 //    for(int i = 0; i < 5; i++){
 //        printf("%d ", tmp[i][i]);

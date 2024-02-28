@@ -273,3 +273,77 @@ bool checkInclusion(char* s1, char* s2) {
     }
     return false;
 }
+
+// 双指针问题
+// # 15 三数之和
+
+int cmp(const void* pa, const void* pb){
+    int a=*(int*)pa;
+    int b=*(int*)pb;
+    return a>b?1:-1;
+}
+
+int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes) {
+    //初始化处理返回值，二维数组的大小和保存每一个一维数组大小的数组的空间保持一致
+    int** returnArr = (int**)malloc(sizeof(int*) * 100); 
+    *returnColumnSizes=(int*)malloc(sizeof(int) * 100);
+    *returnSize=0;
+
+    if(numsSize < 3){
+        return returnArr;
+    }
+
+    // 预处理
+    qsort(nums, numsSize, sizeof(int), cmp);
+    int maxArrNum = 100;
+
+    for(int i = 0; i < numsSize - 2; i++){
+        // 剪枝
+        if(nums[i] > 0){
+            break;
+        }
+        // 剪枝
+        if(i > 0 && nums[i] == nums[i - 1]){
+            continue;
+        }
+            
+        // 在 [i + 1, len - 1] 区间里查找两数之和为 -nums[i]
+        // 因为有序，因此可以可以把 j 和 k 分别从区间的两端向中间靠拢
+        // 由此省去一个循环
+        int target = -nums[i];
+        int left = i + 1;
+        int right = numsSize - 1;
+
+        while(left < right){
+            if(nums[left] + nums[right] < target){
+                left++;
+            }else if(nums[left] + nums[right] > target){
+                right--;
+            }else{
+                if(*returnSize == maxArrNum){
+                    maxArrNum *= 2;
+                    returnArr = (int**)realloc(returnArr, sizeof(int*) * maxArrNum);
+                    *returnColumnSizes=(int*)realloc(*returnColumnSizes,sizeof(int) * maxArrNum);
+                }
+                returnArr[*returnSize] = (int*)malloc(sizeof(int) * 3);
+                (*returnColumnSizes)[*returnSize] = 3;
+                
+                returnArr[*returnSize][0] = nums[i];
+                returnArr[*returnSize][1] = nums[left];
+                returnArr[*returnSize][2] = nums[right];
+                (*returnSize)++;
+
+                // 剪枝: 找到了一个解以后
+                while(left < right && nums[left] == nums[left + 1]){
+                    left++;
+                }
+                while(left < right && nums[right] == nums[right - 1]){
+                    right--;
+                }
+                left++;
+                right--;
+            }
+        }
+    }
+    return returnArr;
+}
