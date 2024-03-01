@@ -397,3 +397,26 @@ int threeSumClosest(int *nums, int numsSize, int target) {
     return best;
 }
 
+// # 167 两数之和
+int* twoSum(int* nums, int numbersSize, int target, int* returnSize) {
+    int* ans = (int*)malloc(sizeof(int) * 2);
+    *returnSize = 2;
+
+    int left = 0;
+    int right = numbersSize - 1;
+    while(left < right){
+        int sum = nums[left] + nums[right];
+        if(sum == target){
+            ans[0] = left + 1;
+            ans[1] = right + 1;
+            return ans;
+        }else if(sum < target){
+            left++;
+        }else{
+            right--;
+        }
+    }
+    ans[0] = -1;
+    ans[1] = 0;
+    return ans;
+}
