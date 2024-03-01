@@ -420,3 +420,45 @@ int* twoSum(int* nums, int numbersSize, int target, int* returnSize) {
     ans[1] = 0;
     return ans;
 }
+
+// # 42 接雨水
+// 当前格子能够存水的格子数和以下三者有关：
+//	 它左边的所有柱形中最高的那个柱形；
+//	 它右边的所有柱形中最高的那个柱形；
+//	 它自己的高度。
+// 计算一个格子储水的量取决于，min(左边最高的，右边最高的) - 自身的
+// 使用双指针我们就可以轻易得到两边最末尾/最开始柱形的高度
+// 若当前两遍最矮的柱形 > 当前指针的柱形，既能够储水
+// 此时并不需要关注中间柱形的高度
+
+int trap(int* height, int heightSize) {
+    if(heightSize < 3){
+    	return 0;
+    }
+    int leftMax = height[0];
+    int rightMax = height[heightSize - 1];
+    int ans = 0;
+    int left = 1;
+    int right = heightSize - 2;
+    while(left <= right){
+    	int minVal = min(leftMax, rightMax);
+    	if(minVal == leftMax){
+    		// 左边已经看到的最高高度 < 右边已经看到的最高高度
+    		// 左边和右边已经看到的最高高度只有 1 个，
+    		// 此时右边虽然还没有扫描，但是下标位置的存水量是可以确定的。
+    		// 它等于：左边已经看到的最高高度 - 当前自己的柱子的高度（大于 0 时有效）。
+    		if(minVal > height[left]){
+    			ans += minVal - height[left];
+    		}
+    		leftMax = max(leftMax, height[left]);
+    		left++
+    	}else{
+    		if(minVal > height[right]){
+    			ans += minVal - height[right];
+    		}
+    		rightMax = max(rightMax, height[right]);
+    		right--;
+    	}
+    }
+    return ans;
+}
