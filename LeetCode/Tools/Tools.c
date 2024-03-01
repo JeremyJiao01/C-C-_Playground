@@ -4,31 +4,35 @@
 
 #include "Func.h"
 
-int characterReplacement(char * s, int k){
-    int window[256] = {0};
-    int right = 0;
-    int left = 0;
-    int A = 'A';
-    int sLen = strlen(s);
-    int maxLen = 1;
-    window[s[0] - A]++;
-    while(right < sLen){
-        if(window[s[right] - A] == 0){
-            k--;
-            while(k < 0){
-                window[s[left] - A]--;
-                if(window[s[left] - A] == 0){
-                    k++;
-                }
-                left++;
-            }
-        }
-        if(k >= 0){
-            maxLen = maxLen > (right - left + 1) ? maxLen : (right - left + 1);
-        }
-        right++;
+int maxArea(int* height, int heightSize) {
+    if(heightSize < 3){
+        return 0;
     }
-    return maxLen;
+    int leftMax = height[0];
+    int rightMax = height[heightSize - 1];
+    int S = 0;
+    int ans = 0;
+    int left = 0;
+    int right = heightSize - 1;
+    while(left <= right){
+        int minVal = leftMax < rightMax ? leftMax : rightMax;
+        if(minVal == leftMax){
+            if(height[left] >= leftMax){
+                S = (right - left) * leftMax;
+                ans = S > ans ? S : ans;
+            }
+            left++;
+            leftMax = height[left] > leftMax ? height[left] : leftMax;
+        }else{
+            if(height[right] >= rightMax){
+                S = (right - left) * rightMax;
+                ans = S > ans ? S : ans;
+            }
+            right--;
+            rightMax = height[right] > rightMax ? height[right] : rightMax;
+        }
+    }
+    return ans;
 }
 
 int main(){
@@ -37,8 +41,8 @@ int main(){
 //    int* randomArr = generateRandomArray(genNum);
 //    Display(randomArr, genNum);
 //    testSortTime(randomArr, genNum, quickSortArr);
-    char record[] = "AABACBBA";
-    int nums = characterReplacement(record, 2);
+    int record[] = {1,8,6,2,5,4,8,3,7};
+    int nums = maxArea(record, 9);
 //    int tmp[5][5] = {0};
 //    for(int i = 0; i < 5; i++){
 //        printf("%d ", tmp[i][i]);
