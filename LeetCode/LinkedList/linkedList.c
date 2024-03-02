@@ -71,4 +71,34 @@ struct ListNode *reverseBetween(struct ListNode *head, int left, int right) {
     return dummyNode->next;
 }
 
+// # 203 移除链表元素
+struct ListNode* removeElements(struct ListNode* head, int val) {
+    struct ListNode* dummyNode = malloc(sizeof(struct ListNode));
+    dummyNode->next = head;
+    struct ListNode* preNode = dummyNode;
+    while(preNode->next != NULL){
+        if(preNode->next->val == val){
+            preNode->next = preNode->next->next;
+        }else{
+            preNode = preNode->next;
+        }
+    }
+    return dummyNode->next;
+}
+
+// # 24 两两交换链表中的节点
+struct ListNode* swapPairs(struct ListNode* head) {
+    struct ListNode dummyHead;
+    dummyHead.next = head;
+    struct ListNode* temp = &dummyHead;
+    while (temp->next != NULL && temp->next->next != NULL) {
+        struct ListNode* node1 = temp->next;
+        struct ListNode* node2 = temp->next->next;
+        temp->next = node2;
+        node1->next = node2->next;
+        node2->next = node1;
+        temp = node1;
+    }
+    return dummyHead.next;
+}
 
