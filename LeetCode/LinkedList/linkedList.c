@@ -102,3 +102,46 @@ struct ListNode* swapPairs(struct ListNode* head) {
     return dummyHead.next;
 }
 
+// # 25 K个一组翻转链表
+struct ListNode** Reverse(struct ListNode* head, struct ListNode* tail){
+    struct ListNode* pre = tail->next;
+    struct ListNode* p = head;
+    while(pre != tail){
+        struct ListNode* next = p->next;
+        p->next = pre;
+        pre = p;
+        p = next;
+    }
+    struct ListNode** returnArr = (struct ListNode**)malloc(sizeof(struct ListNode*) * 2);
+    returnArr[0] = head;
+    returnArr[1] = tail;
+    return returnArr;
+}
+
+struct ListNode* reverseKGroup(struct ListNode* head, int k) {
+    struct ListNode* dummyNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummyNode->next = head;
+    struct ListNode* cureNode = dummyNode;
+
+    while(cureNode != NULL){
+        struct ListNode* tail = cureNode;
+        // 查看剩余部分是否大于k  
+        for(int i = 0; i < k; i++){      
+            tail = tail->next;
+            if(tail == NULL){
+                return dummyNode->next;
+            }
+        }
+
+        struct ListNode* next = tail->next;
+        struct ListNode** reverse = Reverse(head, tail);
+        head = reverse[1];
+        tail = reverse[0];
+
+        cureNode->next = head;
+        tail->next = next;
+        cureNode = tail;
+        head = tail->next;
+    }
+    return dummyNode->next;
+}
