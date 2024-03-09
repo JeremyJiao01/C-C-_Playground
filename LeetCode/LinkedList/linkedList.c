@@ -145,3 +145,93 @@ struct ListNode* reverseKGroup(struct ListNode* head, int k) {
     }
     return dummyNode->next;
 }
+
+// # 876 链表的中间节点
+struct ListNode* middleNode(struct ListNode* head) {
+    struct ListNode* slow = head;
+    struct ListNode* fast = head;
+    while (fast->next != NULL && fast->next->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+// # 143 重新排序链表
+struct ListNode* middleNode(struct ListNode* head) {
+    struct ListNode* slow = head;
+    struct ListNode* fast = head;
+    while (fast->next != NULL && fast->next->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+struct ListNode* reverseList(struct ListNode* head) {
+    struct ListNode* prev = NULL;
+    struct ListNode* curr = head;
+    while (curr != NULL) {
+        struct ListNode* nextTemp = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+    return prev;
+}
+
+void mergeList(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode* l1_tmp;
+    struct ListNode* l2_tmp;
+    while (l1 != NULL && l2 != NULL) {
+        l1_tmp = l1->next;
+        l2_tmp = l2->next;
+
+        l1->next = l2;
+        l1 = l1_tmp;
+
+        l2->next = l1;
+        l2 = l2_tmp;
+    }
+}
+
+void reorderList(struct ListNode* head) {
+    if (head == NULL) {
+        return;
+    }
+    struct ListNode* mid = middleNode(head);
+    struct ListNode* l1 = head;
+    struct ListNode* l2 = mid->next;
+    mid->next = NULL;
+    l2 = reverseList(l2);
+    mergeList(l1, l2);
+}
+
+// # 61 旋转链表
+struct ListNode* rotateRight(struct ListNode* head, int k) {
+    if(head == NULL || head->next == NULL || k ==0){
+        return head;
+    }
+
+    // 计算链表长度
+    struct ListNode* curNode = head;
+    int count = 1;
+    while(curNode != NULL && curNode->next != NULL){
+        count += 1;
+        curNode = curNode->next;
+    }
+
+    // 计算要从哪里开始旋转
+    int rotateNum = count - (k % count);
+    if(rotateNum == count){
+        return head;
+    }
+
+    curNode->next = head; // 将链表变成环，之后再断开
+    for(int i = 0; i < rotateNum; i++){
+        curNode = curNode->next;
+    }
+    struct ListNode* nextNode = curNode->next;
+    curNode->next = NULL;
+    return nextNode;
+}
