@@ -317,3 +317,32 @@ bool isPalindrome(struct ListNode* head) {
     slow->next = reverseList(secondHalfStart);
     return result;
 }
+
+// # 147 对链表进行插入排序
+struct ListNode* insertionSortList(struct ListNode* head) {
+    if(head == NULL){
+        return head;
+    }
+    struct ListNode* dummyHead = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummyHead->next = head;
+    struct ListNode* lastNode = head;
+    struct ListNode* curNode = head->next;
+    while(curNode != NULL){
+        if(curNode->val >= lastNode->val){
+            lastNode = lastNode->next;
+        }else{
+            struct ListNode* prevNode = dummyHead;
+            // 这里需要找到插入点的前一个位置
+            while(prevNode->next->val <= curNode->val){
+                prevNode = prevNode->next;
+            }
+            lastNode->next = curNode->next;
+            curNode->next = prevNode->next;
+            prevNode->next = curNode;
+        }
+        curNode = lastNode->next;
+    }
+    return dummyHead->next;
+}
+
+
