@@ -256,3 +256,64 @@ struct ListNode* oddEvenList(struct ListNode* head) {
     return head;
 }
 
+// # 234 回文链表
+// 算法的正确性在于递归处理节点的顺序是 [相反] 的
+// 而我们在函数外又记录了一个变量，因此从本质上，我们同时在正向和逆向迭代匹配。
+// 在堆栈中存放好了数据后就可以进入被调用的函数。
+// 在完成被调用函数之后，他会弹出堆栈顶部元素，以恢复在进行函数调用之前所在的函数。
+// 在进行回文检查之前，递归函数将在堆栈中创建 n 个堆栈帧，计算机会逐个弹出进行处理。
+// 这种方法不仅使用了O(n)的空间
+// 同时为每个节点创建堆栈帧极大的限制了算法能够处理的最大链表大小。
+
+// 在并发环境下，
+// 函数运行时需要锁定其他线程或进程对链表的访问，因为在函数执行过程中链表会被修改。
+
+// 整个流程可以分为以下五个步骤：
+
+//  1. 找到前半部分链表的尾节点。// 使用快慢指针在一次遍历中找到中间
+//  2. 反转后半部分链表。
+//  3. 判断是否回文。
+//  4. 恢复链表。
+//  5. 返回结果。
+struct ListNode* reverseList(struct ListNode* head) {
+    struct ListNode* prev = NULL;
+    struct ListNode* curr = head;
+    while (curr != NULL) {
+        struct ListNode* nextTemp = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+    return prev;
+}
+
+
+bool isPalindrome(struct ListNode* head) {
+    if(head == NULL){
+        return true;
+    }
+
+    struct ListNode* fast = head;
+    struct ListNode* slow = head;
+    while(fast->next != NULL && fast->next->next != NULL){
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+    // slow 为中间节点，同时也是前半部分的尾部节点
+    // 反转后半部分
+    struct ListNode* secondHalfStart = reverseList(slow->next);
+    
+    // 判断是否为回文
+    struct ListNode* p1 = head;
+    struct ListNode* p2 = secondHalfStart;
+    bool result = true;
+    while(result && p2 != NULL){
+        if(p1->val != p2->val){
+            result = false;
+        }
+        p1 = p1->next;
+        p2 = p2->next;
+    }
+    slow->next = reverseList(secondHalfStart);
+    return result;
+}
