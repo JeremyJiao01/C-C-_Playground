@@ -235,3 +235,24 @@ struct ListNode* rotateRight(struct ListNode* head, int k) {
     curNode->next = NULL;
     return nextNode;
 }
+
+// # 328 奇偶链表
+// 第一个节点视为奇数，第二个节点视为偶数
+// 将奇数节点放在左边，偶数节点放在右边
+struct ListNode* oddEvenList(struct ListNode* head) {
+    if (head == NULL) {
+        return head;
+    }
+    struct ListNode* evenHead = head->next;
+    struct ListNode* odd = head;
+    struct ListNode* even = evenHead;
+    while (even != NULL && even->next != NULL) {
+        odd->next = even->next;
+        odd = odd->next;
+        even->next = odd->next;
+        even = even->next;
+    }
+    odd->next = evenHead;
+    return head;
+}
+
