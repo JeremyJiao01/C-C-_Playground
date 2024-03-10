@@ -228,3 +228,87 @@ void quickSortArr(int* nums, int numsSize){
     scanf("%d\n", &mode);
     quickSort(nums, 0, numsSize - 1, mode);
 }
+
+// --------------------LinkedList----------------------------------
+
+// Function to create a new node
+LinkedNode* createNode(char value) {
+    LinkedNode* newNode = (LinkedNode*)malloc(sizeof(LinkedNode));
+    newNode->value = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to add a node at the tail
+void addAtTail(LinkedList* list, char value) {
+    LinkedNode* newNode = createNode(value);
+    if (list->count == 0) {
+        list->head = newNode;
+    } else {
+        LinkedNode* cur = list->head;
+        while (cur->next != NULL) {
+            cur = cur->next;
+        }
+        cur->next = newNode;
+    }
+    list->count++;
+}
+
+// Function to add a node at the head
+void addAtHead(LinkedList* list, char value) {
+    LinkedNode* newNode = createNode(value);
+    if (list->count == 0) {
+        list->head = newNode;
+    } else {
+        newNode->next = list->head;
+        list->head = newNode;
+    }
+    list->count++;
+}
+
+// Function to get a node at a given index
+LinkedNode* get(LinkedList* list, int index) {
+    if (list->count == 0 || index < 0 || index >= list->count) {
+        return NULL;
+    }
+    LinkedNode* current = list->head;
+    for (int i = 0; i < index; i++) {
+        current = current->next;
+    }
+    return current;
+}
+
+// Function to add a node at a given index
+void addAtIndex(LinkedList* list, char value, int index) {
+    if (list->count == 0 || index >= list->count) {
+        return;
+    }
+    if (index <= 0) {
+        addAtHead(list, value);
+        return;
+    }
+    LinkedNode* prev = get(list, index - 1);
+    LinkedNode* next = prev->next;
+    LinkedNode* newNode = createNode(value);
+    prev->next = newNode;
+    newNode->next = next;
+    list->count++;
+}
+
+// Function to remove a node at a given index
+void removeAtIndex(LinkedList* list, int index) {
+    if (list->count == 0 || index < 0 || index >= list->count) {
+        return;
+    }
+    if (index == 0) {
+        LinkedNode* temp = list->head;
+        list->head = list->head->next;
+        free(temp);
+    } else {
+        LinkedNode* prev = get(list, index - 1);
+        LinkedNode* temp = prev->next;
+        prev->next = prev->next->next;
+        free(temp);
+    }
+    list->count--;
+}

@@ -36,3 +36,21 @@ int quickSortPartition_randomPivot(int* nums, int left, int right);
 int quickSortPartition_threePart(int* nums, int left, int right);
 void quickSort(int* nums, int left, int right, int mode);
 void quickSortArr(int* nums, int numsSize);
+
+//------------------------------CreatLinkedList----------------
+// Node structure
+typedef struct LinkedNode {
+    char value;
+    struct LinkedNode* next;
+} LinkedNode;
+// Linked List structure
+typedef struct LinkedList {
+    int count; // Length of the linked list
+    LinkedNode* head;
+} LinkedList;
+LinkedNode* createNode(char value);
+void addAtTail(LinkedList* list, char value);
+void addAtHead(LinkedList* list, char value);
+LinkedNode* get(LinkedList* list, int index);
+void addAtIndex(LinkedList* list, char value, int index);
+void removeAtIndex(LinkedList* list, int index);
