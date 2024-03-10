@@ -345,4 +345,23 @@ struct ListNode* insertionSortList(struct ListNode* head) {
     return dummyHead->next;
 }
 
-
+// # 19 删除链表的倒数第N个结点
+struct ListNode* removeNthFromEnd(struct ListNode* head, int n) {
+    struct ListNode* dummyNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummyNode->next = head;
+    int count = 0;
+    struct ListNode* curNode = dummyNode;
+    while(curNode->next != NULL){
+        curNode = curNode->next;
+        count++;
+    }
+    int number = count - n;
+    curNode = dummyNode;
+    while(number--){
+        curNode = curNode->next;
+    }
+    struct ListNode* deleteNode = curNode->next;
+    curNode->next = deleteNode->next;
+    deleteNode->next = NULL;
+    return dummyNode->next;
+}
