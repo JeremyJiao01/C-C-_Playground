@@ -370,14 +370,18 @@ struct ListNode* removeNthFromEnd(struct ListNode* head, int n) {
 struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
     // 1. 两链表从头开始遍历
     //    若遍历到一个链表中有元素，另一无元素时自动为0
-    // 2. 若两数之和 / 10 不为0，则Carry flag = 1
-    //    当遍历到下一个元素时自动+1，同时Carry flag = 0
+    // 2. 若两数之和 / 10 不为0，则Carry = 1
+    //    当遍历到下一个元素时自动+1，同时Carry = 0
     //
     struct ListNode *head = NULL, *tail = NULL;
     int carry = 0;
     while (l1 || l2) {
-        int n1 = l1 ? l1->val : 0;
+	// 此处为判断链表是否遍历完
+	// 若未遍历完，则取值为当前节点的值
+	// 若遍历到空节点，则数值为0
+        int n1 = l1 ? l1->val : 0; 
         int n2 = l2 ? l2->val : 0;
+	// 当前总和需要加上进位的数
         int sum = n1 + n2 + carry;
         if (!head) {
             head = tail = malloc(sizeof(struct ListNode));
@@ -389,7 +393,9 @@ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
             tail = tail->next;
             tail->next = NULL;
         }
+	//判断是否有进位
         carry = sum / 10;
+	// 防止继续遍历空节点导致报错
         if (l1) {
             l1 = l1->next;
         }
@@ -397,10 +403,58 @@ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
             l2 = l2->next;
         }
     }
+    // 这里已经推出while循环了，则表示两个链表的姐都都已经遍历完
+    // 若此时进位标识仍大于0，则需要再创建一个节点来进位
     if (carry > 0) {
         tail->next = malloc(sizeof(struct ListNode));
         tail->next->val = carry;
         tail->next->next = NULL;
+    }
+    return head;
+}
+
+// # 21 合并两个有序链表
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
+    struct ListNode* dummyNode1 = (struct ListNode*)malloc(sizeof(struct ListNode));
+    struct ListNode* dummyNode2 = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummyNode1->next = list1;
+    dummyNode2->next = list2;
+    struct ListNode* curNode1 = dummyNode1;
+    struct ListNode* curNode2 = dummyNode2;
+    struct ListNode* head = NULL;
+    struct ListNode* tail = NULL;
+    int flag = 0;
+    while(curNode1->next || curNode2->next){
+        int n1 = curNode1->next ? curNode1->next->val : 200;
+        int n2 = curNode2->next ? curNode2->next->val : 200;
+        if(!head){
+            head = tail = malloc(sizeof(struct ListNode));
+            if(n1 > n2){
+                tail->val = n2;
+                flag = 2;
+            } else {
+                tail->val = n1;
+                flag = 1;
+            }            
+            tail->next = NULL;
+        }else{
+            tail->next = malloc(sizeof(struct ListNode));
+            if(n1 > n2){
+                tail->next->val = n2;
+                flag = 2;
+            } else {
+                tail->next->val = n1;
+                flag = 1;
+            }
+            tail = tail->next;
+            tail->next = NULL;
+        }
+        if(curNode1 && flag == 1){
+            curNode1 = curNode1->next;
+        }
+        if(curNode2 && flag == 2){
+            curNode2 = curNode2->next;
+        }
     }
     return head;
 }
