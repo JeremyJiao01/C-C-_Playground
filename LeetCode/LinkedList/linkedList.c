@@ -519,3 +519,30 @@ struct ListNode* deleteDuplicates(struct ListNode* head) {
     }
     return dummyNode->next;
 }
+
+// # 86 分隔链表
+// 给你一个链表的头节点 head 和一个特定值 × ，请你对链表进行分隔，
+// 使得所有小于x的节点都出现在 大于或等于 x 的节点之前。
+// 你应当 保留 两个分区中每个节点的初始相对位置。
+struct ListNode* partition(struct ListNode* head, int x) {
+    struct ListNode* minorNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    struct ListNode* returnNode = minorNode;
+    struct ListNode* majorNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    struct ListNode* connectNode = majorNode;
+    struct ListNode* curNode = head;
+    minorNode->next = NULL;
+    majorNode->next = NULL;
+    while(curNode){
+        if(curNode->val < x){
+            minorNode->next = curNode;
+            minorNode = minorNode->next;
+        }else{
+            majorNode->next = curNode;
+            majorNode = majorNode->next;
+        }
+        curNode = curNode->next;
+    }
+    majorNode->next = NULL;
+    minorNode->next = connectNode->next;
+    return returnNode->next;
+}
