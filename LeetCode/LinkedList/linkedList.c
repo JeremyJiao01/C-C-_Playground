@@ -493,3 +493,29 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
     return returnList;
 }
 
+// # 82 删除排序链表中的重复元素2
+// 给定一个已排序的链表的头 head，
+// 删除原始链表中所有重复数字的节点，只留下不同的数字，返回已排序的链表 
+// 思路：快慢指针，若相同则快指针前进，若不同，慢指针前进
+struct ListNode* deleteDuplicates(struct ListNode* head) {
+    if(head == NULL || head->next == NULL){
+        return head;
+    }
+    struct ListNode* dummyNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummyNode->next = head;
+    struct ListNode* fastNode = head->next;
+    struct ListNode* slowNode = dummyNode;
+    while(fastNode){
+        if(fastNode->val != slowNode->next->val){
+            fastNode = fastNode->next;
+            slowNode = slowNode->next;
+        }else{
+            while(fastNode && fastNode->val == slowNode->next->val){
+                fastNode = fastNode->next;
+            }
+            slowNode->next = fastNode;
+            if(fastNode)fastNode = fastNode->next;
+        }
+    }
+    return dummyNode->next;
+}
