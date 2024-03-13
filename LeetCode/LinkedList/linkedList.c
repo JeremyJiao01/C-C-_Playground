@@ -458,3 +458,38 @@ struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
     }
     return head;
 }
+
+// # 23 合并K个升序链表 
+// 思路2: 将多链表的合并看成两两合并的子任务
+// 使用ans来维护更新已合成的链表
+
+struct ListNode* mergeTwoLists(struct ListNode* l1, struct ListNode* l2){
+    if(l1 == NULL || l2 == NULL){
+        return l1 != NULL ? l1 : l2;
+    }
+    struct ListNode* head = (struct ListNode*)malloc(sizeof(struct ListNode));
+    struct ListNode* tail = head;
+    while(l1 && l2){
+        if(l1->val > l2->val){
+            tail->next = l2;
+            l2 = l2->next;
+        }else{
+            tail->next = l1;
+            l1 = l1->next;
+        }
+        tail = tail->next;
+    }
+    // 退出循环时，必有一个链表遍历到空节点
+    // 此时只需要让tail->next为非空链表的下一个节点即可
+    tail->next = l1 != NULL ? l1 : l2;
+    return head->next; 
+}
+
+struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
+    struct ListNode* returnList = NULL;
+    for(int i = 0; i < listsSize; i++){
+        returnList = mergeTwoLists(returnList, lists[i]);
+    }
+    return returnList;
+}
+
