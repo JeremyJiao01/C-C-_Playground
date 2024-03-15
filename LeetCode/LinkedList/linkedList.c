@@ -557,3 +557,22 @@ struct ListNode* middleNode(struct ListNode* head) {
     }
     return slowNode;
 }
+
+// # 142 环形链表
+// https://leetcode.cn/problems/linked-list-cycle-ii/solutions/12616/linked-list-cycle-ii-kuai-man-zhi-zhen-shuang-zhi-
+struct ListNode *detectCycle(struct ListNode *head) {
+    struct ListNode* fast = head;
+    struct ListNode* slow = head;
+    while(true){
+        if(fast == NULL || fast->next == NULL) return NULL;
+        fast = fast->next->next;
+        slow = slow->next;
+        if(fast == slow) break;
+    }
+    fast = head;
+    while(slow != fast){
+        slow = slow->next;
+        fast = fast->next;
+    }
+    return fast;
+}
