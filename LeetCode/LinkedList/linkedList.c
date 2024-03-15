@@ -546,3 +546,14 @@ struct ListNode* partition(struct ListNode* head, int x) {
     minorNode->next = connectNode->next;
     return returnNode->next;
 }
+
+// # 876 链表的中间结点
+struct ListNode* middleNode(struct ListNode* head) {
+    struct ListNode* fastNode = head;
+    struct ListNode* slowNode = head;
+    while(fastNode && fastNode->next){
+        fastNode = fastNode->next->next;
+        slowNode = slowNode->next;
+    }
+    return slowNode;
+}
