@@ -576,3 +576,70 @@ struct ListNode *detectCycle(struct ListNode *head) {
     }
     return fast;
 }
+
+// # 160 相交链表
+
+// 方法一：
+// 判断收否为相交节点，不能以值作为判断方式
+// 应使用指针所指向的相同点
+// 先计算出两链表各自的长度
+// 长的直接从短的开头开始
+struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *headB) {
+    int aSize = 0;
+    int bSize = 0;
+    struct ListNode* curNodeA = headA;
+    struct ListNode* curNodeB = headB;
+    while(curNodeA){
+        curNodeA = curNodeA->next;
+        aSize++;
+    }
+    while(curNodeB){
+        curNodeB = curNodeB->next;
+        bSize++;
+    }
+    curNodeA = headA;
+    curNodeB = headB;
+    if(aSize > bSize){
+        int count = aSize - bSize;
+        while(count--){
+            curNodeA = curNodeA->next;
+        }
+    }else{
+        int count = bSize - aSize;
+        while(count--){
+            curNodeB = curNodeB->next;
+        }
+    }
+    while(curNodeA && curNodeB){
+        if(curNodeA == curNodeB){
+            return curNodeA;
+        }
+        curNodeA = curNodeA->next;
+        curNodeB = curNodeB->next;
+    }
+    return NULL;
+}
+
+// 方法二： 双指针
+// 当链表 headA 和 headB 都不为空时，创建两个指针 pA 和 pB，
+//初始时分别指向两个链表的头节点 headA 和 headB，
+//然后将两个指针依次遍历两个链表的每个节点。具体做法如下：
+
+//  - 每步操作需要同时更新指针 pA 和 pB。
+//  - 如果指针 pA 不为空，则将指针 pA 移到下一个节点；
+//    如果指针 pB 不为空，则将指针 pB 移到下一个节点。
+//  - 如果指针 pA为空,则将指针 pA 移到链表 headB 的头节点;
+//    如果指针pB 为空，则将指针 pB 移到链表 headA 的头节点。
+//  - 当指针 pA 和 pB 指向同一个节点或者都为空时，返回它们指向的节点或者 null。
+struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *headB){
+    if(headA == NULL || headB == NULL){
+        return NULL;
+    }
+    struct ListNode* pa = headA;
+    struct ListNode* pb = headB;
+    while(pa != pb){
+        pa = pa == NULL ? headB : pa->next;
+        pb = pb == NULL ? headA : pb->next;
+    }
+    return pa;
+}
