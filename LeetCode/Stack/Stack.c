@@ -98,3 +98,38 @@ bool isValid(char* s) {
     }
     return node == 0;
 }
+
+// # 150 逆波兰表达式求值(后缀表达式)
+
+bool isNumber(char* token){
+    return strlen(token) > 1 || ('0' <= token[0] && token[0] <= '9');
+}
+
+int evalRPN(char** tokens, int tokensSize) {
+    int* stack = (int*)malloc(sizeof(int) * tokensSize);
+    int node = 0;
+    for(int i = 0; i < tokensSize; i++){
+        char* token = tokens[i];
+        if(isNumber(token)){
+            stack[node++] = atoi(token); // 将字符串里的所有数字提取
+        }else{
+            int num2 = stack[--node];
+            int num1 = stack[--node];
+            switch(token[0]){
+                case'+':
+                    stack[node++] = num1 + num2;
+                    break;
+                case'-':
+                    stack[node++] = num1 - num2;
+                    break; 
+                case'*':
+                    stack[node++] = num1 * num2;
+                    break;  
+                case'/':
+                    stack[node++] = num1 / num2;
+                    break;                                                     
+            }
+        }
+    }
+    return stack[node - 1];
+}
