@@ -68,3 +68,33 @@ char* simplifyPath(char* path) {
     free(stack);
     return ans;
 }
+
+// # 20 有效的括号
+char convert(char a){
+    if (a == '}') return '{';
+    if (a == ']') return '[';
+    if (a == ')') return '(';
+    return 0;
+}
+
+bool isValid(char* s) {
+    int n = strlen(s);
+    if(n % 2 == 1){
+        return false;
+    }
+    int stack[n + 1];
+    int node = 0;
+    for(int i = 0; i < n; i++){
+        char ch = convert(s[i]);
+        if(ch){
+            if(node == 0 || stack[node - 1] != ch){
+                return false;
+            }
+            node--;
+        }else{
+            stack[node] = s[i];
+            node++;
+        }
+    }
+    return node == 0;
+}
