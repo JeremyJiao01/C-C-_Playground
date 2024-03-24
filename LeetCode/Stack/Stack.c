@@ -133,3 +133,39 @@ int evalRPN(char** tokens, int tokensSize) {
     }
     return stack[node - 1];
 }
+
+// # 316 去除重复字幕
+char* removeDuplicateLetters(char* s) {
+    int hash[26], visit[26];
+    memset(hash, 0, sizeof(hash));
+    memset(visit, 0, sizeof(visit));
+
+    int n = strlen(s);
+    for(int i = 0; i < n; i++){
+    	hash[s[i] - 'a']++;
+    }
+    char* returnChar = (char*)malloc(sizeof(char)*27);
+    int stackTop = 0;
+    for(int i = 0; i < n; i++){
+    	if(!visit[s[i] - 'a']){ // 如果没有访问过这个元素
+    		while(stackTop > 0 && returnChar[stackTop - 1] > s[i]){
+    		// 若前一个元素字典序大于当前
+    			if(hash[returnChar[stackTop - 1] - 'a'] > 0){
+    			// 若该元素在后面还会出现
+    				visit[returnChar[--stackTop] - 'a'] = 0;
+    				// 在栈中删去该元素	
+    			} else {
+    				// 如果后续没出现，则保留该元素
+    				break;
+    			}
+    		}
+    		visit[s[i] - 'a'] = 1;
+    		returnChar[stackTop++] = s[i];
+    		// 在栈中加入该元素
+    	}
+    	hash[s[i] - 'a'] -= 1;
+    	// 元素在后续数量减一
+    }
+    returnChar[stackTop] = '\0';
+    return returnChar;    
+}
