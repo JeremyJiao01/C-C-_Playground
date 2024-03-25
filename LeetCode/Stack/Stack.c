@@ -228,3 +228,43 @@ int* dailyTemperatures(int* temperatures, int temperaturesSize, int* returnSize)
     }
     return ans;
 }
+
+// # 496 下一个更大的元素
+// 倒序遍历 nums2，并用单调栈中维护当前位置右边的更大的元素列表，
+// 从栈底到栈顶的元素是单调递减的，得到每个元素右边的第一个更大元素值
+// 使用哈希表存储以上得到的结果
+int* nextGreaterElement(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize) {
+    *returnSize = nums1Size;
+    int* res = (int*)malloc(sizeof(int) * nums1Size);
+    
+    // Simulate the stack with a dynamic array
+    int* stack = (int*)malloc(sizeof(int) * nums2Size);
+    int stackSize = 0;
+    
+    // The "map" will be a 2D array with the first column being the number from nums2
+    // and the second column being the next greater element for that number
+    int** map = (int**)malloc(sizeof(int*) * nums2Size);
+    for (int i = 0; i < nums2Size; ++i) {
+        map[i] = (int*)malloc(sizeof(int) * 2);
+    }
+
+    for (int i = nums2Size - 1; i >= 0; --i) {
+        while (stackSize > 0 && nums2[i] >= stack[stackSize - 1]) {
+            --stackSize; // Simulating pop operation
+        }
+        map[i][0] = nums2[i];
+        map[i][1] = stackSize == 0 ? -1 : stack[stackSize - 1];
+        stack[stackSize++] = nums2[i]; // Simulating push operation
+    }
+    
+    // Simulate the get operation from the map
+    for (int i = 0; i < nums1Size; ++i) {
+        for (int j = 0; j < nums2Size; ++j) {
+            if (map[j][0] == nums1[i]) {
+                res[i] = map[j][1];
+                break;
+            }
+        }
+    }
+    return res;
+}
