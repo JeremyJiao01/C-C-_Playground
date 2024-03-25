@@ -169,3 +169,62 @@ char* removeDuplicateLetters(char* s) {
     returnChar[stackTop] = '\0';
     return returnChar;    
 }
+
+char* removeDuplicateLetters(char* s) {
+    int hash[26], visit[26];
+    memset(hash, 0, sizeof(hash));
+    memset(visit, 0, sizeof(visit));
+
+    int n = strlen(s);
+    for(int i = 0; i < n; i++){
+    	hash[s[i] - 'a']++;
+    }
+    char* returnChar = (char*)malloc(sizeof(char)*27);
+    int stackTop = 0;
+    for(int i = 0; i < n; i++){
+    	if(!visit[s[i] - 'a']){ // 如果没有访问过这个元素
+    		while(stackTop > 0 && returnChar[stackTop - 1] > s[i]){
+    		// 若前一个元素字典序大于当前
+    			if(hash[returnChar[stackTop - 1] - 'a'] > 0){
+    			// 若该元素在后面还会出现
+    				visit[returnChar[--stackTop] - 'a'] = 0;
+    				// 在访问列表中删去该元素	
+    			} else {
+    				// 如果访问过该元素则直接跳过
+    				break;
+    			}
+    		}
+    		visit[s[i] - 'a'] = 1;
+    		returnChar[stackTop++] = s[i];
+    		// 在栈中加入该元素
+    	}
+    	hash[s[i] - 'a'] -= 1;
+    	// 元素在后续数量减一
+    }
+    returnChar[stackTop] = '\0';
+    return returnChar;    
+}
+
+// # 739 每日温度
+int* dailyTemperatures(int* temperatures, int temperaturesSize, int* returnSize) {
+    *returnSize = temperaturesSize;
+    int* ans = (int*)malloc(sizeof(int) * temperaturesSize);
+
+    for (int i = 0; i < temperaturesSize; ++i) {
+        ans[i] = 0; // Initialize the answer array with 0
+    }
+    // We will use a dynamically-allocated array to simulate a stack.
+    // stack is used to storage the subscript of temperatiures element
+    int* stack = (int*)malloc(sizeof(int) * temperaturesSize);
+    int stackTop = 0;
+
+    for (int i = 0; i < temperaturesSize; ++i) {
+        while (stackTop > 0 && temperatures[i] > temperatures[stack[stackTop - 1]]) {
+            int prevIndex = stack[--stackTop]; // Simulating pop operation
+            ans[prevIndex] = i - prevIndex;
+        }
+        // when temperatures element's value less than the previous elements' value 
+        stack[stackTop++] = i; // Simulating push operation
+    }
+    return ans;
+}
