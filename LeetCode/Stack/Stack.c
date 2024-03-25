@@ -268,3 +268,32 @@ int* nextGreaterElement(int* nums1, int nums1Size, int* nums2, int nums2Size, in
     }
     return res;
 }
+
+// 使用栈来保存元素下标
+// 当新的元素入栈时，弹出所有值小于当前元素的下标
+// 整个遍历大小为numsSize * 2 - 1，只需对其取模即可
+int* nextGreaterElements(int* nums, int numsSize, int* returnSize) {
+    *returnSize = numsSize;
+    if(numsSize == 0){
+        return NULL;
+    }
+    int* returnArr = (int*)malloc(sizeof(int) * numsSize);
+    memset(returnArr, -1, sizeof(int) * numsSize);
+    int stack[numsSize * 2 - 1], stackTop = 0;
+    for(int i = 0; i < numsSize * 2 - 1; i++){
+        while(stackTop > 0 && nums[stack[stackTop - 1]] < nums[i % numsSize]){
+            returnArr[stack[stackTop - 1]] = nums[i % numsSize];
+            stackTop--;
+        }
+        stack[stackTop++] = i % numsSize;
+    }
+    return returnArr;
+}
+
+
+
+
+
+
+
+
