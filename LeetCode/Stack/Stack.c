@@ -290,6 +290,76 @@ int* nextGreaterElements(int* nums, int numsSize, int* returnSize) {
     return returnArr;
 }
 
+// # 84 柱状图中最大的矩形
+// https://leetcode.cn/problems/largest-rectangle-in-histogram/solutions/142012/bao-li-jie-fa-zhan-by-liweiwei1419
+int largestRectangleArea(int* heights, int heightsSize) {
+    if(heightsSize == 0){
+        return 0;
+    }
+    if(heightsSize == 1){
+        return heights[0];
+    }
+    int res = 0;
+    int* stack =  (int*)malloc(sizeof(int) * heightsSize);
+    // the stack is storage the subscript of the heights array
+    int stackTop = 0;
+
+    for(int i = 0; i < heightsSize; i++){
+        // 第一次遍历能够确定部分柱状的面积
+        // 即右边存在严格小于其的柱形
+        while(stackTop > 0 && heights[i] < heights[stack[stackTop - 1]]){
+            int curHeight = heights[stack[--stackTop]];
+            while(stackTop > 0 && heights[stack[stackTop - 1]] == curHeight){
+                stackTop--;
+            }
+            int curWidth = 0;
+            if(!stackTop > 0){
+                curWidth = i;
+            }else{
+                curWidth = i - stack[stackTop - 1] - 1;
+            }
+            res = res > curWidth * curHeight ? res : curWidth * curHeight;
+        }
+        stack[stackTop++] = i;
+    }
+
+    while(stackTop > 0){
+        // 栈中剩下柱形
+        int curHeight = heights[stack[--stackTop]];
+        while(stackTop > 0 && heights[stack[stackTop - 1]] == curHeight){
+            stackTop--;
+        }
+        int curWidth;
+        if(!stackTop > 0){
+            curWidth = heightsSize;
+        }else{
+            curWidth = heightsSize - stack[stackTop - 1] - 1;
+            // 因为是从最后一个柱形往前计算，所以在最右边增加一个高度为0的柱形
+            // 即 高度为0的柱形坐标为heightsSize
+        }
+        res = res > curWidth * curHeight ? res : curWidth * curHeight;
+    }
+    return res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
