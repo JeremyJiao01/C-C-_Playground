@@ -379,6 +379,90 @@ int* nextLargerNodes(struct ListNode* head, int* returnSize) {
     return ans;
 }
 
+// # 232 用栈实现队列
+typedef struct{
+    int* stk;
+    int stackSize;
+    int stackMemory;
+} Stack;
+
+Stack* createStack(int stkSize){
+    Stack* ret = malloc(sizeof(Stack));
+    ret->stk = malloc(sizeof(int) * stkSize);
+    ret->stackSize = 0;
+    ret->stackMemory = stkSize;
+    return ret;
+}
+
+void stackPush(Stack* obj, int x){
+    obj->stk[obj->stackSize++] = x;
+}
+
+void stackPop(Stack* obj){
+    obj->stackSize--;
+}
+
+int stackTop(Stack* obj){
+    return obj->stk[obj->stackSize - 1];
+}
+
+bool stackEmpty(Stack* obj){
+    return obj->stackSize == 0;
+}
+
+void stackFree(Stack* obj){
+    free(obj->stk);
+}
+
+typedef struct {
+    Stack* inStack;
+    Stack* outStack;
+} MyQueue;
+
+
+MyQueue* myQueueCreate() {
+    MyQueue* ret = malloc(sizeof(MyQueue));
+    ret->inStack = createStack(100);
+    ret->outStack = createStack(100);
+    return ret;
+}
+
+void in2out(MyQueue* obj){
+    while(!stackEmpty(obj->inStack)){
+        stackPush(obj->outStack, stackTop(obj->inStack));
+        stackPop(obj->inStack);
+    }
+}
+
+void myQueuePush(MyQueue* obj, int x) {
+    stackPush(obj->inStack, x);   
+}
+
+int myQueuePop(MyQueue* obj) {
+    if(stackEmpty(obj->outStack)){
+        in2out(obj);
+    }
+    int x = stackTop(obj->outStack);
+    stackPop(obj->outStack);
+    return x;
+}
+
+int myQueuePeek(MyQueue* obj) {
+    if(stackEmpty(obj->outStack)){
+        in2out(obj);
+    }
+    return stackTop(obj->outStack);
+}
+
+bool myQueueEmpty(MyQueue* obj) {
+    return stackEmpty(obj->inStack) && stackEmpty(obj->outStack);
+}
+
+void myQueueFree(MyQueue* obj) {
+    stackFree(obj->inStack);
+    stackFree(obj->outStack);
+}
+
 
 
 
