@@ -4,54 +4,116 @@
 
 #include "Func.h"
 
+#define LEN 20
+typedef struct queue {
+    int *data;
+    int head;
+    int rear;
+    int size;
+} Queue;
 
-LinkedNode* mergeTwoLists(LinkedNode* list1, LinkedNode* list2) {
-    LinkedNode* dummyNode1 = (LinkedNode*)malloc(sizeof(LinkedNode));
-    LinkedNode* dummyNode2 = (LinkedNode*)malloc(sizeof(LinkedNode));
-    dummyNode1->next = list1;
-    dummyNode2->next = list2;
-    LinkedNode* curNode1 = dummyNode1;
-    LinkedNode* curNode2 = dummyNode2;
-    LinkedNode* head = NULL;
-    LinkedNode* tail = NULL;
-    int flag = 0;
-    while(curNode1->next || curNode2->next){
-        int n1 = curNode1->next ? curNode1->next->value : 200;
-        int n2 = curNode2->next ? curNode2->next->value : 200;
-        if(!head){
-            head = tail = malloc(sizeof(LinkedNode));
-            if(n1 > n2){
-                tail->value = n2;
-                flag = 2;
-            } else {
-                tail->value = n1;
-                flag = 1;
-            }
-            tail->next = NULL;
-        }else{
-            tail->next = malloc(sizeof(LinkedNode));
-            if(n1 > n2){
-                tail->next->value = n2;
-                flag = 2;
-            } else {
-                tail->next->value = n1;
-                flag = 1;
-            }
-            tail = tail->next;
-            tail->next = NULL;
-        }
-        if(curNode1 && flag == 1){
-            curNode1 = curNode1->next;
-        }
-        if(curNode2 && flag == 2){
-            curNode2 = curNode2->next;
-        }
-    }
-    return head;
+typedef struct {
+    Queue *queue1, *queue2;
+} MyStack;
+
+Queue *initQueue(int k) {
+    Queue *obj = (Queue *)malloc(sizeof(Queue));
+    obj->data = (int *)malloc(k * sizeof(int));
+    obj->head = -1;
+    obj->rear = -1;
+    obj->size = k;
+    return obj;
 }
 
+void enQueue(Queue *obj, int e) {
+    if (obj->head == -1) {
+        obj->head = 0;
+    }
+    obj->rear = (obj->rear + 1) % obj->size;
+    obj->data[obj->rear] = e;
+}
+
+int deQueue(Queue *obj) {
+    int a = obj->data[obj->head];
+    if (obj->head == obj->rear) {
+        obj->rear = -1;
+        obj->head = -1;
+        return a;
+    }
+    obj->head = (obj->head + 1) % obj->size;
+    return a;
+}
+
+int isEmpty(Queue *obj) {
+    return obj->head == -1;
+}
+
+MyStack *myStackCreate() {
+    MyStack *obj = (MyStack *)malloc(sizeof(MyStack));
+    obj->queue1 = initQueue(LEN);
+    obj->queue2 = initQueue(LEN);
+    return obj;
+}
+
+void myStackPush(MyStack *obj, int x) {
+    if (isEmpty(obj->queue1)) {
+        enQueue(obj->queue2, x);
+    } else {
+        enQueue(obj->queue1, x);
+    }
+}
+
+int myStackPop(MyStack *obj) {
+    if (isEmpty(obj->queue1)) {
+        while (obj->queue2->head != obj->queue2->rear) {
+            enQueue(obj->queue1, deQueue(obj->queue2));
+        }
+        return deQueue(obj->queue2);
+    }
+    while (obj->queue1->head != obj->queue1->rear) {
+        enQueue(obj->queue2, deQueue(obj->queue1));
+    }
+    return deQueue(obj->queue1);
+}
+
+int myStackTop(MyStack *obj) {
+    if (isEmpty(obj->queue1)) {
+        return obj->queue2->data[obj->queue2->rear];
+    }
+    return obj->queue1->data[obj->queue1->rear];
+}
+
+bool myStackEmpty(MyStack *obj) {
+    if (obj->queue1->head == -1 && obj->queue2->head == -1) {
+        return true;
+    }
+    return false;
+}
+
+void myStackFree(MyStack *obj) {
+    free(obj->queue1->data);
+    obj->queue1->data = NULL;
+    free(obj->queue1);
+    obj->queue1 = NULL;
+    free(obj->queue2->data);
+    obj->queue2->data = NULL;
+    free(obj->queue2);
+    obj->queue2 = NULL;
+    free(obj);
+    obj = NULL;
+}
 
 int main(){
+    MyStack* stack = myStackCreate();
+    myStackPush(stack, 2);
+    myStackPush(stack, 3);
+    myStackPush(stack, 4);
+    myStackPop(stack);
+    myStackPop(stack);
+    return 0;
+}
+
+//int main(){
 //    srand(time(NULL));
 //
 //    int* randomArr = generateRandomArray(genNum);
@@ -65,27 +127,7 @@ int main(){
 //    }
 //    printf("%d", nums);
 
-    LinkedList* l1 = (LinkedList*)malloc(sizeof(LinkedList));
-    l1->count = 0;
-    l1->head = NULL;
-    addAtTail(l1, 1);
-    addAtTail(l1, 2);
-    addAtTail(l1, 4);
-    LinkedNode* current1 = l1->head;
 
-    LinkedList* l2 = (LinkedList*)malloc(sizeof(LinkedList));
-    l2->count = 0;
-    l2->head = NULL;
-    addAtTail(l2, 1);
-    addAtTail(l2, 3);
-    addAtTail(l2, 4);
-    LinkedNode* current2 = l2->head;
-
-    LinkedNode * returnList = mergeTwoLists(current1, current2);
-    for(int i = 0; i < 6; i++){
-        printf("%d\n", returnList->value);
-        returnList = returnList->next;
-    }
     
-    return 0;
-}
+//    return 0;
+//}
