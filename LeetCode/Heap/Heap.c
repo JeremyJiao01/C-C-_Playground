@@ -43,7 +43,7 @@ void swap(int* data, int a, int b){
     data[b] = tmp;
 }
 
-void siftUp(Heap* heap){
+void siftUp(Heap* heap, int k){
     while(heap.size > 1 && heap.data[k / 2] < data[heap.size]){
         // data[k/2]是父节点
         swap(heap.data, heap.size/2, heap.size);
@@ -51,8 +51,8 @@ void siftUp(Heap* heap){
     }
 }
 
-int poll(Heap* heap){
-    if(size == 0){
+int poll(Heap* heap, int x){
+    if(heap.size == 0){
         return 0;
     }
     int ret = heap.data[1];
@@ -65,10 +65,10 @@ int poll(Heap* heap){
 }
 
 void siftDown(Heap* heap, int k){
-    while(2 * k <= size){
+    while(2 * k <= heap.size){
         int j = 2 * k;
         // j + 1 为 k 的右孩子，因为0位置不存元素
-        if(j + 1 <= size && heap.data[j + 1] > data[j]){
+        if(j + 1 <= heap.size && heap.data[j + 1] > heap.data[j]){
             // 右孩子大于左孩子
             j++;
         }
@@ -136,6 +136,95 @@ int* sortArr(int* nums, int numsSize){
     return nums;
 }
 
+// # 215 数组中第K个最大元素
+typedef struct{
+    int* data;
+    int size;
+    int capacity;
+} PriorityQueue;
 
+PriorityQueue* InitPQ(int capacity){
+    PriorityQueue* pq = (PriorityQueue*)malloc(sizeof(PriorityQueue));
+    pq->data = (int*)malloc((capacity+1)*sizeof(int));
+    pq->size = 0;
+    pq->capacity = capacity;
+    return pq;
+}
 
+void freePq(PriorityQueue* pq){
+    free(pq->data);
+    free(pq);
+}
+
+void siftUp(PriorityQueue* pq, int k){
+    int tmp = pq->data[k];
+    while(k > 1 && pq->data[k / 2] > tmp){
+        pq->data[k] = pq->data[k / 2];
+        k /= 2;
+    }
+    pq->data[k] = tmp;
+}
+
+void siftDown(PriorityQueue* pq, int k){
+    int tmp = pq->data[k];
+    while(2 * k <= pq->size){
+        int j = 2 * k;
+        if(j < pq->size && pq->data[j] > pq->data[j + 1]){
+            j++;
+        }
+        if(pq->data[j] >= tmp){
+            break;
+        }else{
+            pq->data[k] = pq->data[j];
+            k = j;
+        }
+    }
+    pq->data[k] = tmp;
+}
+
+void offer(PriorityQueue* pq, int item){
+    if(pq->size + 1 > pq->capacity){
+        pq->capacity *= 2;
+        pq->data = (int*)realloc(pq->data, (pq->capacity + 1) * sizeof(int));
+    }
+    pq->data[++pq->size] = item;
+    siftUp(pq, pq->size);
+}
+
+int poll(PriorityQueue* pq){
+    if(pq->size == 0){
+        exit(EXIT_FAILURE);
+    }
+    int res = pq->data[1];
+    pq->data[1] = pq->[pq->size--];
+    siftDown(pq, 1);
+    return res;
+}
+
+int peek(PriorityQueue* pq){
+    if(pq->size == 0){
+        return NULL;
+    }
+    return pq->data[1];
+}
+
+void replace(PriorityQueue* pq, int item){
+    pq->data[1] = item;
+    siftDown(pq, 1);
+}
+
+int findKthLargest(int* nums, int numsSize, int k){
+    PriorityQueue* minHeap = InitPQ(k);
+    for(int i = 0; i < k; i++){
+        offer(minHeap, nums[i]);
+    }
+    for(int i = k; i < numsSize; i++){
+        if(nums[i] > peek(minHeap)){
+            replace(minHeap, nums[i]);
+        }
+    }
+    int res = peek(minHeap);
+    freePq(minHeap);
+    return res;
+}
 
