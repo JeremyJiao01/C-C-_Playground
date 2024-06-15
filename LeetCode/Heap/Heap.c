@@ -365,6 +365,65 @@ void medianFinderAddNum(MedianFinder* obj, int num) {
     }
 }
 
+// #451 根据字符出现频率排序
+// 用于存储字符和其频率的结构体
+typedef struct {
+    char character;
+    int frequency;
+} CharFrequency;
+
+// 用于最大堆的比较函数
+int compare(const void* a, const void* b) {
+    return ((CharFrequency*)b)->frequency - ((CharFrequency*)a)->frequency;
+}
+
+// 用于统计字符频率的函数
+void countFrequencies(const char* s, CharFrequency* freqMap, int* uniqueCount) {
+    int freq[256] = {0};
+    int len = strlen(s);
+
+    for (int i = 0; i < len; ++i) {
+        freq[(unsigned char)s[i]]++;
+    }
+
+    *uniqueCount = 0;
+    for (int i = 0; i < 256; ++i) {
+        if (freq[i] > 0) {
+            freqMap[*uniqueCount].character = (char)i;
+            freqMap[*uniqueCount].frequency = freq[i];
+            (*uniqueCount)++;
+        }
+    }
+}
+
+// 主函数，实现频率排序
+char* frequencySort(const char* s) {
+    int len = strlen(s);
+    if (len == 0) {
+        char* res = (char*)malloc(1);
+        res[0] = '\0';
+        return res;
+    }
+
+    CharFrequency freqMap[256];
+    int uniqueCount;
+    countFrequencies(s, freqMap, &uniqueCount);
+
+    // 建立最大堆
+    qsort(freqMap, uniqueCount, sizeof(CharFrequency), compare);
+
+    // 构建结果字符串
+    char* res = (char*)malloc(len + 1);
+    int index = 0;
+    for (int i = 0; i < uniqueCount; ++i) {
+        for (int j = 0; j < freqMap[i].frequency; ++j) {
+            res[index++] = freqMap[i].character;
+        }
+    }
+    res[index] = '\0';
+    return res;
+}
+
 double medianFinderFindMedian(MedianFinder* obj) {
     if (obj->maxHeap->size > obj->minHeap->size) {
         return obj->maxHeap->data[0];
