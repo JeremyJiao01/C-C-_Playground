@@ -438,3 +438,82 @@ void medianFinderFree(MedianFinder* obj) {
     free(obj->minHeap);
     free(obj);
 }
+
+// # 973 最接近原点的 k 个点
+
+// 结构体用于存储点的距离和索引
+typedef struct {
+    int distance;
+    int index;
+} Point;
+
+// 最大堆的比较函数
+int compare(const void *a, const void *b) {
+    return ((Point *)b)->distance - ((Point *)a)->distance;
+}
+
+// 构建最大堆
+void maxHeapify(Point heap[], int size, int index) {
+    int largest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < size && heap[left].distance > heap[largest].distance)
+        largest = left;
+    if (right < size && heap[right].distance > heap[largest].distance)
+        largest = right;
+
+    if (largest != index) {
+        Point temp = heap[index];
+        heap[index] = heap[largest];
+        heap[largest] = temp;
+        maxHeapify(heap, size, largest);
+    }
+}
+
+void heapPush(Point heap[], int *size, Point value) {
+    heap[(*size)++] = value;
+    for (int i = (*size) / 2 - 1; i >= 0; i--) {
+        maxHeapify(heap, *size, i);
+    }
+}
+
+Point heapPop(Point heap[], int *size) {
+    Point root = heap[0];
+    heap[0] = heap[--(*size)];
+    maxHeapify(heap, *size, 0);
+    return root;
+}
+
+int** kClosest(int** points, int pointsSize, int* pointsColSize, int k, int* returnSize, int** returnColumnSizes) {
+    Point *maxHeap = (Point *)malloc(k * sizeof(Point));
+    int heapSize = 0;
+
+    for (int i = 0; i < k; ++i) {
+        int dist = points[i][0] * points[i][0] + points[i][1] * points[i][1];
+        heapPush(maxHeap, &heapSize, (Point){dist, i});
+    }
+
+    for (int i = k; i < pointsSize; ++i) {
+        int dist = points[i][0] * points[i][0] + points[i][1] * points[i][1];
+        if (dist < maxHeap[0].distance) {
+            heapPop(maxHeap, &heapSize);
+            heapPush(maxHeap, &heapSize, (Point){dist, i});
+        }
+    }
+
+    int **ans = (int **)malloc(k * sizeof(int *));
+    *returnColumnSizes = (int *)malloc(k * sizeof(int));
+    for (int i = 0; i < k; ++i) {
+        Point p = heapPop(maxHeap, &heapSize);
+        ans[i] = (int *)malloc(2 * sizeof(int));
+        ans[i][0] = points[p.index][0];
+        ans[i][1] = points[p.index][1];
+        (*returnColumnSizes)[i] = 2;
+    }
+
+    *returnSize = k;
+    free(maxHeap);
+    return ans;
+}
+
